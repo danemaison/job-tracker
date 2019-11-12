@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Container, Row } from '../ui/elements';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+import { theme } from './theme';
 
 const Wrapper = styled(Container)`
   position: fixed;
@@ -8,6 +8,7 @@ const Wrapper = styled(Container)`
   top: 0;
   width: 100%;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background-color: white;
   z-index: 1;
   transition: 0.25s ease-out;
@@ -22,9 +23,11 @@ const Form = styled.form`
 `;
 
 const Label = styled.label`
-  font-weight: 400;
+  font-weight: 600;
+  font-size:.8rem;
 `;
 const Input = styled.input`
+  border-radius: 5px;
   font-family: inherit;
   display: block;
   width: calc(100% - 20px);
@@ -36,11 +39,12 @@ const Input = styled.input`
 `;
 
 const TextArea = styled.textarea`
+  border-radius: 5px;
   font-family: inherit;
   font-size: 1rem;
   padding: 10px;
   resize: vertical;
-  height: 20vh;
+  height: 100%;
   display: block;
   width: calc(100% - 20px);
   border: 1px solid ${({ theme }) => theme.grey};
@@ -70,12 +74,52 @@ const Cancel = styled(Submit)`
   background-color: ${({ theme }) => theme.red};
 `;
 
-const DatePicker = styled(DayPickerInput)`
-  display:block;
-  > input {
-    height: 1000px;
-     width: 100%;
-    }
+const RadioRow = styled(Row)`
+  justify-content:flex-start;
+  margin-bottom: 10px;
+`;
+
+const RadioStyles = {
+  waiting: theme.yellow,
+  rejected: theme.red,
+  interview: theme.green
+};
+const Radio = styled.input`
+  background-color: ${({ checked, value }) => checked ? RadioStyles[value] : 'white'};
+  width: 1.5rem;
+  height:1.5rem;
+  border-radius:5px;
+  border: 1px solid ${({ checked, theme }) => checked || theme.grey};
+  margin-top:2px;
+`;
+
+const RadioLabel = styled.label`
+  font-size:.6rem;
+  font-weight: 600;
+  margin-right:15px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+`;
+
+const DatePickerWrapper = styled.div`
+  display: block;
+  width: 100%;
+  > div {
+    width: 100%;
+  }
+  input {
+    border-radius:5px;
+    font-family: inherit;
+    display: block;
+    width: calc(100% - 20px);
+    border: 1px solid ${({ theme }) => theme.grey};
+    height: 40px;
+    padding: 0 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
 `;
 
 export {
@@ -86,6 +130,9 @@ export {
   TextArea,
   ButtonWrapper,
   Submit,
-  Cancel,
-  DatePicker
+  RadioRow,
+  Radio,
+  RadioLabel,
+  DatePickerWrapper,
+  Cancel
 };

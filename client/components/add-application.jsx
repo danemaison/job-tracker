@@ -1,58 +1,61 @@
 import React from 'react';
-import styled from 'styled-components';
 import {
   Wrapper,
   Form,
   Label,
   Input,
   TextArea,
+  Radio,
+  RadioRow,
+  RadioLabel,
   ButtonWrapper,
+  DatePickerWrapper,
   Submit,
   Cancel
 } from './styling/form-styles';
 import { Title } from './ui/elements';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
-const DatePickerWrapper = styled.div`
-  display: block;
-  width:100%;
-  >div { width: 100%;}
-  input {
-    font-family: inherit;
-    display: block;
-    width: calc(100% - 20px);
-    border: 1px solid ${({ theme }) => theme.grey};
-    height: 40px;
-    padding: 0 10px;
-    font-size: 1rem;
-    margin-bottom: 10px;
-  }
-`;
 
 class AddApp extends React.Component {
   constructor(props) {
     super(props);
+    const date = new Date();
     this.state = {
       company: '',
-      applicationDate: ''
+      position: '',
+      application: '',
+      status: 'waiting',
+      interview: '',
+      notes: ''
     };
+    this.handleChange = this.handleChange.bind(this);
   }
   handleChange(e) {
-
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   }
   submit(e) {
     e.preventDefault();
-
+    // http.post('/api/add-application'{
+    //   this.state
+    // });
   }
   render() {
     const { open } = this.props;
+    const { status } = this.state;
+    const { handleChange, submit } = this;
     return (
-      <Wrapper open>
+      <Wrapper open={open}>
         <Title>Add an Application</Title>
-        <Form onSubmit={this.submit}>
+        <Form onSubmit={submit}>
           <Label>
             Company
-            <Input name="company" type="text" />
+            <Input name="company" type="text" onChange={handleChange} />
+          </Label>
+          <Label>
+            Position
+            <Input name="position" type="text" onChange={handleChange} />
           </Label>
           <Label>
             Application Date
@@ -60,19 +63,48 @@ class AddApp extends React.Component {
               <DayPickerInput inputProps={{ readOnly: true }} />
             </DatePickerWrapper>
           </Label>
+          <Label>Status</Label>
+          <RadioRow>
+            <RadioLabel>
+              Waiting
+              <Radio
+                checked={status === 'waiting'}
+                type="radio"
+                name="status"
+                value="waiting"
+                onChange={handleChange}
+              />
+            </RadioLabel>
+            <RadioLabel>
+              Interview
+              <Radio
+                checked={status === 'interview'}
+                type="radio"
+                name="status"
+                value="interview"
+                onChange={handleChange}
+              />
+            </RadioLabel>
+            <RadioLabel>
+              Rejected
+              <Radio
+                checked={status === 'rejected'}
+                type="radio"
+                name="status"
+                value="rejected"
+                onChange={handleChange}
+              />
+            </RadioLabel>
+          </RadioRow>
           <Label>
-            Status
-            <Input name="application-date" type="text" />
-          </Label>
-          <Label>
-            Interview
+            Interview Date
             <DatePickerWrapper>
               <DayPickerInput inputProps={{ readOnly: true }} />
             </DatePickerWrapper>
           </Label>
           <Label>
             Notes
-            <TextArea name="notes" />
+            <TextArea name="notes" onChange={handleChange}/>
           </Label>
           <ButtonWrapper>
             <Cancel type="button" value="Cancel" />
