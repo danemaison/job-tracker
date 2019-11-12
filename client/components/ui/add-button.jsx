@@ -16,8 +16,8 @@ const Wrapper = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
-  bottom: 35px;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
   width:2.5rem;
   height:2.5rem;
   border-radius:10px;
@@ -28,8 +28,8 @@ const Wrapper = styled.div`
 
 const AddApplication = ({ click, open }) => {
   return (
-    <Wrapper>
-      <AddButton open={open} icon={faPlus} onClick={click} />
+    <Wrapper onClick={click}>
+      <AddButton open={open} icon={faPlus} />
     </Wrapper>
   );
 };
