@@ -1,0 +1,11 @@
+body{
+  margin:0;
+  box-sizing: border-box;
+  /* weights: 400,500,600,700  */
+  font-family: 'Montserrat', sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+   border-spacing: 0 1em;
+}
