@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items:center;
   width: 100%;
 `;
 
@@ -11,6 +11,7 @@ const Row = styled.div`
   display:flex;
   justify-content:space-around;
   width:100%;
+
 `;
 
 const Title = styled.div`
@@ -23,6 +24,7 @@ const Title = styled.div`
 const TableRow = styled.div`
   width: 94%;
   display: flex;
+  flex-shrink:0;
   align-items: center;
   text-align: center;
   margin: 5px auto;

@@ -10,8 +10,18 @@ import
   faEllipsisV
 } from '@fortawesome/free-solid-svg-icons';
 
+const Details = styled.div`
+  display: flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+`;
 const Company = styled.div`
   font-weight: 600;
+`;
+const Position = styled.div`
+margin-top:5px;
+  font-size:.45rem;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
@@ -26,18 +36,26 @@ const statusIcons = {
 };
 
 const Application = ({ data }) => {
-  const { company, applied, status, interviewDate } = data;
+  const { company, applied, status, interviewDate, position } = data;
   const applicationDate = new Date(applied);
   const formattedDate = `${applicationDate.getMonth()}/${applicationDate.getDay()}/${applicationDate.getFullYear()}`;
   return (
     <TableRow>
-      <Company>{company}</Company>
+      <Details>
+        <Company>{company}</Company>
+        <Position>{position}</Position>
+      </Details>
       <div>{formattedDate}</div>
       <div>
-        <Icon color={statusIcons[status].color} icon={statusIcons[status].icon}/>
+        <Icon
+          color={statusIcons[status].color}
+          icon={statusIcons[status].icon}
+        />
       </div>
       <div>{interviewDate || '-/-/-'}</div>
-      <div><FontAwesomeIcon icon={faEllipsisV}/></div>
+      <div>
+        <FontAwesomeIcon icon={faEllipsisV} />
+      </div>
     </TableRow>
   );
 };

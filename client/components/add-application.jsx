@@ -16,51 +16,64 @@ import {
 import { Title } from './ui/elements';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
+import http from '../lib/http';
 
 class AddApp extends React.Component {
   constructor(props) {
     super(props);
-    const date = new Date();
     this.state = {
       company: '',
       position: '',
-      application: '',
+      applicationDate: new Date(),
       status: 'waiting',
-      interview: '',
+      interviewDate: '',
       notes: ''
     };
+    this.handleApplicationDateChange = this.handleApplicationDateChange.bind(this);
+    this.handleInterviewDayChange = this.handleInterviewDayChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.submit = this.submit.bind(this);
   }
   handleChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   }
+  handleApplicationDateChange(day) {
+    this.setState({ applicationDate: day });
+  }
+  handleInterviewDayChange(day) {
+    this.setState({ interviewDate: day });
+  }
   submit(e) {
     e.preventDefault();
-    // http.post('/api/add-application'{
-    //   this.state
-    // });
+    http
+      .post('/api/add-application', this.state)
+      .then(data => console.log(data));
   }
   render() {
     const { open } = this.props;
-    const { status } = this.state;
-    const { handleChange, submit } = this;
+    const { status, applicationDate } = this.state;
+    const { handleChange, handleApplicationDateChange, handleInterviewDayChange, submit } = this;
     return (
       <Wrapper open={open}>
         <Title>Add an Application</Title>
         <Form onSubmit={submit}>
           <Label>
             Company
-            <Input name="company" type="text" onChange={handleChange} />
+            <Input required name="company" type="text" onChange={handleChange} />
           </Label>
           <Label>
             Position
-            <Input name="position" type="text" onChange={handleChange} />
+            <Input required name="position" type="text" onChange={handleChange} />
           </Label>
           <Label>
             Application Date
             <DatePickerWrapper>
-              <DayPickerInput inputProps={{ readOnly: true }} />
+              <DayPickerInput
+                required
+                value={applicationDate}
+                onDayChange={handleApplicationDateChange}
+                inputProps={{ readOnly: true }} />
             </DatePickerWrapper>
           </Label>
           <Label>Status</Label>
@@ -68,6 +81,7 @@ class AddApp extends React.Component {
             <RadioLabel>
               Waiting
               <Radio
+                required
                 checked={status === 'waiting'}
                 type="radio"
                 name="status"
@@ -99,7 +113,9 @@ class AddApp extends React.Component {
           <Label>
             Interview Date
             <DatePickerWrapper>
-              <DayPickerInput inputProps={{ readOnly: true }} />
+              <DayPickerInput
+                onDayChange={handleInterviewDayChange}
+                inputProps={{ readOnly: true }} />
             </DatePickerWrapper>
           </Label>
           <Label>

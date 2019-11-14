@@ -5,12 +5,26 @@ import Application from './templates/application-template';
 import StatusCard from './templates/status-card';
 import { Container, TableRow, Title, Row } from './ui/elements';
 
+const Client = styled(Container)`
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  overflow:hidden;
+`;
+const Applications = styled(Container)`
+  min-height:0;
+  overflow-y: auto;
+  >div:last-child{
+    margin-bottom:60px;
+  }
+`;
+
 const Cell = styled.div`
   color: ${({ theme }) => theme.grey};
 `;
 
 const HeaderRow = styled(TableRow)`
   box-shadow: none;
+  margin:25px 0;
   margin-bottom:0;
 `;
 
@@ -50,11 +64,12 @@ class Dashboard extends React.Component {
     }
     const appCounts = this.countApplications();
     return (
-      <Container>
+      <Client>
         <Title>Dashboard</Title>
         <Row>
-          {Object.keys(appCounts).map((item, index) => (<StatusCard key={index} title={item} count={appCounts[item]} />)
-          )}
+          {Object.keys(appCounts).map((item, index) => (
+            <StatusCard key={index} title={item} count={appCounts[item]} />
+          ))}
         </Row>
         <HeaderRow>
           <Cell>Company</Cell>
@@ -62,10 +77,12 @@ class Dashboard extends React.Component {
           <Cell>Status</Cell>
           <Cell>Interview</Cell>
         </HeaderRow>
-        {applications.map(application => (
-          <Application key={application.id} data={application} />
-        ))}
-      </Container>
+        <Applications>
+          {applications.map(application => (
+            <Application key={application.id} data={application} />
+          ))}
+        </Applications>
+      </Client>
     );
   }
 }
