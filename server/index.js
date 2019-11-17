@@ -35,7 +35,8 @@ app.post('/api/add-application', (req, res) => {
 
 app.put('/api/update-application', (req, res) => {
   console.log(req.body);
-  // const sql = `UPDATE`
+  const sql = `UPDATE applications SET status=${status} WHERE id=${id}`;
+
 });
 
 app.listen(process.env.PORT, () => {
