@@ -63,6 +63,7 @@ class Dashboard extends React.Component {
       );
     }
     const appCounts = this.countApplications();
+    const { toggleModal } = this.props;
     return (
       <Client>
         <Title>Dashboard</Title>
@@ -79,7 +80,7 @@ class Dashboard extends React.Component {
         </HeaderRow>
         <Applications>
           {applications.map(application => (
-            <Application key={application.id} data={application} />
+            <Application toggleModal={toggleModal} key={application.id} data={application} />
           ))}
         </Applications>
       </Client>

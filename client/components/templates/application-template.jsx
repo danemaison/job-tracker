@@ -35,7 +35,11 @@ const statusIcons = {
   waiting: { icon: faQuestionCircle, color: theme.yellow }
 };
 
-const Application = ({ data }) => {
+const StyledIcon = styled(FontAwesomeIcon)`
+  cursor:pointer;
+`;
+
+const Application = ({ toggleModal, data }) => {
   const { company, applied, status, interviewDate, position } = data;
   const applicationDate = new Date(applied);
   const formattedDate = `${applicationDate.getMonth()}/${applicationDate.getDay()}/${applicationDate.getFullYear()}`;
@@ -54,7 +58,7 @@ const Application = ({ data }) => {
       </div>
       <div>{interviewDate || '-/-/-'}</div>
       <div>
-        <FontAwesomeIcon icon={faEllipsisV} />
+        <StyledIcon icon={faEllipsisV} onClick={e => toggleModal(e, data)} />
       </div>
     </TableRow>
   );

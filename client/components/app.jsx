@@ -3,27 +3,29 @@ import Dashboard from './dashboard';
 import AddApplicationButton from './ui/add-button';
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styling/theme';
-import AddApp from './add-application';
+import Modal from './add-application';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      addApp: false
+      modalOpen: false,
+      editing: false
     };
-    this.toggleAddApp = this.toggleAddApp.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
   }
-  toggleAddApp() {
-    const { addApp } = this.state;
-    this.setState({ addApp: !addApp });
+  toggleModal(e, data) {
+    console.log(data);
+    const { modalOpen } = this.state;
+    this.setState({ modalOpen: !modalOpen });
   }
   render() {
-    const { addApp } = this.state;
+    const { modalOpen, editing } = this.state;
     return (
       <ThemeProvider theme={theme}>
-        <Dashboard />
-        <AddApp open={addApp} />
-        <AddApplicationButton open={addApp} click={this.toggleAddApp}/>
+        <Dashboard toggleModal={this.toggleModal}/>
+        <Modal open={modalOpen} editing={editing}/>
+        <AddApplicationButton open={modalOpen} toggleModal={this.toggleModal} />
       </ThemeProvider>
     );
   }

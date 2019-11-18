@@ -26,9 +26,9 @@ const Wrapper = styled.div`
   background-color:white;
 `;
 
-const AddApplication = ({ click, open }) => {
+const AddApplication = ({ toggleModal, open }) => {
   return (
-    <Wrapper onClick={click}>
+    <Wrapper onClick={toggleModal}>
       <AddButton open={open} icon={faPlus} />
     </Wrapper>
   );
