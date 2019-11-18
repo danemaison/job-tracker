@@ -10,21 +10,20 @@ class App extends React.Component {
     super(props);
     this.state = {
       modalOpen: false,
-      editing: false
+      editingData: null
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
   toggleModal(e, data) {
-    console.log(data);
     const { modalOpen } = this.state;
-    this.setState({ modalOpen: !modalOpen });
+    this.setState({ modalOpen: !modalOpen, editingData: data || null });
   }
   render() {
-    const { modalOpen, editing } = this.state;
+    const { modalOpen, editingData } = this.state;
     return (
       <ThemeProvider theme={theme}>
         <Dashboard toggleModal={this.toggleModal}/>
-        <Modal open={modalOpen} editing={editing}/>
+        <Modal open={modalOpen} editingData={editingData}/>
         <AddApplicationButton open={modalOpen} toggleModal={this.toggleModal} />
       </ThemeProvider>
     );

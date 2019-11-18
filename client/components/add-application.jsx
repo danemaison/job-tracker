@@ -22,7 +22,7 @@ class AddApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      company: '',
+      company: 'Test',
       position: '',
       applicationDate: new Date(),
       status: 'waiting',
@@ -50,9 +50,25 @@ class AddApp extends React.Component {
       .post('/api/add-application', this.state)
       .then(data => console.log(data));
   }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps !== this.props) {
+      if (this.props.editingData) {
+        const { applied, company, interviewDate, notes, position, status } = this.props.editingData;
+        this.setState({
+          company: company,
+          position: position,
+          applicationDate: applied,
+          status: status,
+          interviewDate: interviewDate,
+          notes: notes
+        });
+      }
+
+    }
+  }
   render() {
     const { open } = this.props;
-    const { status, applicationDate } = this.state;
+    const { status, applicationDate, company, position, interviewDate, notes } = this.state;
     const { handleChange, handleApplicationDateChange, handleInterviewDayChange, submit } = this;
     return (
       <Wrapper open={open}>
@@ -60,11 +76,21 @@ class AddApp extends React.Component {
         <Form onSubmit={submit}>
           <Label>
             Company
-            <Input required name="company" type="text" onChange={handleChange} />
+            <Input
+              required
+              name="company"
+              type="text"
+              value={company}
+              onChange={handleChange} />
           </Label>
           <Label>
             Position
-            <Input required name="position" type="text" onChange={handleChange} />
+            <Input
+              required
+              name="position"
+              type="text"
+              value={position}
+              onChange={handleChange} />
           </Label>
           <Label>
             Application Date
@@ -114,13 +140,17 @@ class AddApp extends React.Component {
             Interview Date
             <DatePickerWrapper>
               <DayPickerInput
+                value={interviewDate}
                 onDayChange={handleInterviewDayChange}
                 inputProps={{ readOnly: true }} />
             </DatePickerWrapper>
           </Label>
           <Label>
             Notes
-            <TextArea name="notes" onChange={handleChange}/>
+            <TextArea
+              name="notes"
+              value={notes}
+              onChange={handleChange}/>
           </Label>
           <ButtonWrapper>
             <Cancel type="button" value="Cancel" />
