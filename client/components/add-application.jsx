@@ -62,6 +62,15 @@ class AddApp extends React.Component {
           interviewDate: interviewDate,
           notes: notes
         });
+      } else {
+        this.setState({
+          company: '',
+          position: '',
+          applicationDate: new Date(),
+          status: 'waiting',
+          interviewDate: '',
+          notes: ''
+        });
       }
 
     }
