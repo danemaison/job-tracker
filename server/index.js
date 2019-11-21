@@ -21,16 +21,17 @@ app.post('/api/add-application', (req, res) => {
   const { company, position, status, notes } = req.body;
   const interviewDate = req.body.interviewDate.split('T')[0];
   const applicationDate = req.body.applicationDate.split('T')[0];
-  console.log(company, position, applicationDate, status, interviewDate, notes);
-
+  // console.log(company, position, applicationDate, status, interviewDate, notes);
+  console.log(req.body.interviewDate);
   const sql = `INSERT INTO applications
-  (id, company, applied, status, interviewDate, user, position, notes)
-  VALUES
-  (NULL, '${company}', '${applicationDate}', '${status}', NULL, '1', '${position}', NULL)`;
-  database.query(sql, (error, result) => {
-    if (error) throw error;
-    res.send(result);
-  });
+  (company, applied, status, interviewDate, user, position, notes)
+  VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  database.query(
+    sql,
+    [company, applicationDate, status, interviewDate, 1, position, 'NULL'], (error, result) => {
+      if (error) throw error;
+      res.send(result);
+    });
 });
 
 app.put('/api/update-application', (req, res) => {

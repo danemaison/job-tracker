@@ -23,7 +23,7 @@ class App extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Dashboard toggleModal={this.toggleModal}/>
-        <Modal open={modalOpen} editingData={editingData}/>
+        <Modal open={modalOpen} editingData={editingData} toggleModal={this.toggleModal}/>
         <AddApplicationButton open={modalOpen} toggleModal={this.toggleModal} />
       </ThemeProvider>
     );

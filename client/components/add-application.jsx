@@ -49,6 +49,7 @@ class AddApp extends React.Component {
     http
       .post('/api/add-application', this.state)
       .then(data => console.log(data));
+    this.props.toggleModal();
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
@@ -76,12 +77,12 @@ class AddApp extends React.Component {
     }
   }
   render() {
-    const { open } = this.props;
+    const { open, editingData, toggleModal } = this.props;
     const { status, applicationDate, company, position, interviewDate, notes } = this.state;
     const { handleChange, handleApplicationDateChange, handleInterviewDayChange, submit } = this;
     return (
       <Wrapper open={open}>
-        <Title>{this.props.editingData ? 'Edit' : 'Add'} an Application</Title>
+        <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
         <Form onSubmit={submit}>
           <Label>
             Company
@@ -162,7 +163,7 @@ class AddApp extends React.Component {
               onChange={handleChange}/>
           </Label>
           <ButtonWrapper>
-            <Cancel type="button" value="Cancel" />
+            <Cancel type="button" value="Cancel" onClick={toggleModal} />
             <Submit type="submit" value="Add" />
           </ButtonWrapper>
         </Form>

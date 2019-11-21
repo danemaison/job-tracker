@@ -39,17 +39,20 @@ const StyledIcon = styled(FontAwesomeIcon)`
   cursor:pointer;
 `;
 
+const formatDate = date => `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+
 const Application = ({ toggleModal, data }) => {
-  const { company, applied, status, interviewDate, position } = data;
-  const applicationDate = new Date(applied);
-  const formattedDate = `${applicationDate.getMonth()}/${applicationDate.getDay()}/${applicationDate.getFullYear()}`;
+  console.log(data);
+  const { company, applied, status, interviewDate: interview, position } = data;
+  const applicationDate = formatDate(new Date(applied));
+  const interviewDate = interview && formatDate(new Date(interview));
   return (
     <TableRow>
       <Details>
         <Company>{company}</Company>
         <Position>{position}</Position>
       </Details>
-      <div>{formattedDate}</div>
+      <div>{applicationDate}</div>
       <div>
         <Icon
           color={statusIcons[status].color}
