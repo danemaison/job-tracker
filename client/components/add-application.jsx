@@ -81,7 +81,7 @@ class AddApp extends React.Component {
     const { handleChange, handleApplicationDateChange, handleInterviewDayChange, submit } = this;
     return (
       <Wrapper open={open}>
-        <Title>Add an Application</Title>
+        <Title>{this.props.editingData ? 'Edit' : 'Add'} an Application</Title>
         <Form onSubmit={submit}>
           <Label>
             Company
