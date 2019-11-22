@@ -42,12 +42,11 @@ const StyledIcon = styled(FontAwesomeIcon)`
 const formatDate = date => `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
 
 const Application = ({ toggleModal, data }) => {
-  console.log(data);
   const { company, applied, status, interviewDate: interview, position } = data;
   const applicationDate = formatDate(new Date(applied));
   const interviewDate = interview && formatDate(new Date(interview));
   return (
-    <TableRow>
+    <TableRow onClick={e => toggleModal(e, data)}>
       <Details>
         <Company>{company}</Company>
         <Position>{position}</Position>

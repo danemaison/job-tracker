@@ -46,22 +46,30 @@ class AddApp extends React.Component {
   }
   submit(e) {
     e.preventDefault();
-    http
-      .post('/api/add-application', this.state)
-      .then(data => console.log(data));
-    this.props.toggleModal();
+    const { editingData, toggleModal } = this.props;
+    if (editingData) {
+      http
+        .put('/api/update-application', this.state);
+    } else {
+      http
+        .post('/api/add-application', this.state);
+    }
+    toggleModal();
   }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.editingData) {
-        const { applied, company, interviewDate, notes, position, status } = this.props.editingData;
+        const { id, company, notes, position, status, applied, interviewDate: interview } = this.props.editingData;
+        const applicationDate = applied.split('T')[0];
+        const interviewDate = interview && interview.split('T')[0];
         this.setState({
+          id: id,
           company: company,
           position: position,
-          applicationDate: applied,
+          applicationDate: applicationDate,
           status: status,
           interviewDate: interviewDate,
-          notes: notes
+          notes: notes === 'NULL' ? '' : notes
         });
       } else {
         this.setState({
@@ -159,12 +167,12 @@ class AddApp extends React.Component {
             Notes
             <TextArea
               name="notes"
-              value={notes}
+              value={notes || ''}
               onChange={handleChange}/>
           </Label>
           <ButtonWrapper>
             <Cancel type="button" value="Cancel" onClick={toggleModal} />
-            <Submit type="submit" value="Add" />
+            <Submit type="submit" value={editingData ? 'Update' : 'Add'} />
           </ButtonWrapper>
         </Form>
       </Wrapper>

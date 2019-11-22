@@ -59,7 +59,12 @@ class Dashboard extends React.Component {
     const { applications } = this.state;
     if (!applications) {
       return (
-        <h1>No applications</h1>
+        <Client>
+          <Title>Dashboard</Title>
+          <Row>
+            <h3>No applications</h3>
+          </Row>
+        </Client>
       );
     }
     const appCounts = this.countApplications();
