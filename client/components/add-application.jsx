@@ -68,7 +68,8 @@ class AddApp extends React.Component {
     const app = this.state;
     if (editingData) {
       http
-        .put('/api/update-application', app);
+        .put('/api/update-application', app)
+        .then(res => updateApplications(app));
     } else {
       http
         .post('/api/add-application', app)
@@ -79,7 +80,7 @@ class AddApp extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.editingData) {
-        const { id, company, notes, position, status, applied, interviewDate: interview } = this.props.editingData;
+        const { id, company, notes, position, status, applicationDate: applied, interviewDate: interview } = this.props.editingData;
         const applicationDate = applied.split('T')[0];
         const interviewDate = interview && interview.split('T')[0];
 
