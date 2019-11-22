@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 database.connect();
 
 app.get('/api/applications', (req, res) => {
-  const sql = 'SELECT * from applications';
+  const sql = 'SELECT * from applications ORDER BY applied DESC';
   database.query(sql,
     (error, result) => {
       if (error) throw error;

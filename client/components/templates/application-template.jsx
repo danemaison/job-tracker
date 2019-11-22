@@ -39,7 +39,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   cursor:pointer;
 `;
 
-const formatDate = date => `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`;
+const formatDate = date => `${date.getMonth() + 1}/${date.getDate() + 1}/${date.getFullYear()}`;
 
 const Application = ({ toggleModal, data }) => {
   const { company, applied, status, interviewDate: interview, position } = data;

@@ -32,8 +32,10 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      applications: null
+      applications: null,
+      filteredApps: null
     };
+    this.filter = this.filter.bind(this);
   }
   componentDidMount() {
     http
@@ -55,6 +57,21 @@ class Dashboard extends React.Component {
     }
     return appCounts;
   }
+  filter(title) {
+    if (title === 'applied') return this.setState({ filteredApps: null });
+
+    const { applications } = this.state;
+    const filteredApps = applications.filter(item => item.status === title);
+    this.setState({
+      filteredApps: filteredApps
+    });
+  }
+  createElements(applications) {
+    const { toggleModal } = this.props;
+    return applications.map(application => (
+      <Application toggleModal={toggleModal} key={application.id} data={application} />
+    ));
+  }
   render() {
     const { applications } = this.state;
     if (!applications) {
@@ -68,13 +85,14 @@ class Dashboard extends React.Component {
       );
     }
     const appCounts = this.countApplications();
-    const { toggleModal } = this.props;
+
+    const { filteredApps } = this.state;
     return (
       <Client>
         <Title>Dashboard</Title>
         <Row>
           {Object.keys(appCounts).map((item, index) => (
-            <StatusCard key={index} title={item} count={appCounts[item]} />
+            <StatusCard filter={this.filter} key={index} title={item} count={appCounts[item]} />
           ))}
         </Row>
         <HeaderRow>
@@ -84,9 +102,9 @@ class Dashboard extends React.Component {
           <Cell>Interview</Cell>
         </HeaderRow>
         <Applications>
-          {applications.map(application => (
-            <Application toggleModal={toggleModal} key={application.id} data={application} />
-          ))}
+          {filteredApps
+            ? this.createElements(filteredApps)
+            : this.createElements(applications)}
         </Applications>
       </Client>
     );

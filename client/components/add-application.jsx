@@ -13,15 +13,29 @@ import {
   Submit,
   Cancel
 } from './styling/form-styles';
+import styled from 'styled-components';
 import { Title } from './ui/elements';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import http from '../lib/http';
 
+const DeleteButton = styled.button`
+  align-self:flex-end;
+  margin-right:5%;
+  color:white;
+  background-color: ${({ theme }) => theme.red};
+  padding:5px 15px;
+  border-radius:5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border:1px solid ${({ theme }) => theme.red};
+`;
+
 class AddApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: '',
       company: 'Test',
       position: '',
       applicationDate: new Date(),
@@ -62,6 +76,7 @@ class AddApp extends React.Component {
         const { id, company, notes, position, status, applied, interviewDate: interview } = this.props.editingData;
         const applicationDate = applied.split('T')[0];
         const interviewDate = interview && interview.split('T')[0];
+
         this.setState({
           id: id,
           company: company,
@@ -91,6 +106,10 @@ class AddApp extends React.Component {
     return (
       <Wrapper open={open}>
         <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
+        {editingData &&
+          <DeleteButton>Delete</DeleteButton>
+        }
+
         <Form onSubmit={submit}>
           <Label>
             Company
@@ -158,7 +177,7 @@ class AddApp extends React.Component {
             Interview Date
             <DatePickerWrapper>
               <DayPickerInput
-                value={interviewDate}
+                value={interviewDate || ''}
                 onDayChange={handleInterviewDayChange}
                 inputProps={{ readOnly: true }} />
             </DatePickerWrapper>

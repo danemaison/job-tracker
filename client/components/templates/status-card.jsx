@@ -38,9 +38,10 @@ const statusColors = {
   interview: theme.green,
   waiting: theme.yellow
 };
-const StatusCard = ({ title, count }) => {
+
+const StatusCard = ({ title, count, filter }) => {
   return (
-    <Card>
+    <Card onClick={() => filter(title)}>
       <Title>{title}</Title>
       <Border color={statusColors[title]}/>
       <Count color={statusColors[title]}>{count}</Count>
