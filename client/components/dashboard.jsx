@@ -24,8 +24,15 @@ const Cell = styled.div`
 
 const HeaderRow = styled(TableRow)`
   box-shadow: none;
-  margin:25px 0;
-  margin-bottom:0;
+  height:0;
+  cursor: default;
+  margin-top:25px;
+  margin-bottom:15px;
+`;
+
+const HeaderCardRow = styled(Row)`
+  width:94%;
+
 `;
 
 class Dashboard extends React.Component {
@@ -90,11 +97,11 @@ class Dashboard extends React.Component {
     return (
       <Client>
         <Title>Dashboard</Title>
-        <Row>
+        <HeaderCardRow>
           {Object.keys(appCounts).map((item, index) => (
             <StatusCard filter={this.filter} key={index} title={item} count={appCounts[item]} />
           ))}
-        </Row>
+        </HeaderCardRow>
         <HeaderRow>
           <Cell>Company</Cell>
           <Cell>Applied</Cell>

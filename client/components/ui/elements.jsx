@@ -22,6 +22,7 @@ const Title = styled.div`
 `;
 
 const TableRow = styled.div`
+  cursor:pointer;
   width: 94%;
   display: flex;
   flex-shrink:0;
@@ -31,14 +32,10 @@ const TableRow = styled.div`
   padding: 0 5px;
   height: 50px;
   border-radius: 15px;
-  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
   > div {
     font-size: 0.75rem;
-    width: 24.25%;
-  }
-  >div:nth-child(5){
-    width:3%;
-    text-align: left;
+    width: 25%;
   }
 `;
 export {

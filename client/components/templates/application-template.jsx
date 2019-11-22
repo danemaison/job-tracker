@@ -6,8 +6,7 @@ import { theme } from '../styling/theme';
 import
 { faTimesCircle,
   faCalendarCheck,
-  faQuestionCircle,
-  faEllipsisV
+  faQuestionCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 const Details = styled.div`
@@ -35,10 +34,6 @@ const statusIcons = {
   waiting: { icon: faQuestionCircle, color: theme.yellow }
 };
 
-const StyledIcon = styled(FontAwesomeIcon)`
-  cursor:pointer;
-`;
-
 const formatDate = date => `${date.getMonth() + 1}/${date.getDate() + 1}/${date.getFullYear()}`;
 
 const Application = ({ toggleModal, data }) => {
@@ -59,9 +54,6 @@ const Application = ({ toggleModal, data }) => {
         />
       </div>
       <div>{interviewDate || '-/-/-'}</div>
-      <div>
-        <StyledIcon icon={faEllipsisV} onClick={e => toggleModal(e, data)} />
-      </div>
     </TableRow>
   );
 };

@@ -31,6 +31,11 @@ const Border = styled.div`
   height: 1px;
   background-color: ${({ color }) => color};
 `;
+const Wrapper = styled.div`
+  width:25%;
+  display:flex;
+  justify-content:center;
+`;
 
 const statusColors = {
   applied: theme.blue,
@@ -41,11 +46,13 @@ const statusColors = {
 
 const StatusCard = ({ title, count, filter }) => {
   return (
-    <Card onClick={() => filter(title)}>
-      <Title>{title}</Title>
-      <Border color={statusColors[title]}/>
-      <Count color={statusColors[title]}>{count}</Count>
-    </Card>
+    <Wrapper>
+      <Card onClick={() => filter(title)}>
+        <Title>{title}</Title>
+        <Border color={statusColors[title]}/>
+        <Count color={statusColors[title]}>{count}</Count>
+      </Card>
+    </Wrapper>
   );
 };
 
