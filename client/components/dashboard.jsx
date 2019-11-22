@@ -32,25 +32,23 @@ const HeaderRow = styled(TableRow)`
 
 const HeaderCardRow = styled(Row)`
   width:94%;
-
 `;
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      applications: null,
       filteredApps: null
     };
     this.filter = this.filter.bind(this);
   }
-  componentDidMount() {
-    http
-      .get('/api/applications')
-      .then(applications => this.setState({ applications }));
-  }
+  // componentDidMount() {
+  //   http
+  //     .get('/api/applications')
+  //     .then(applications => this.setState({ applications }));
+  // }
   countApplications() {
-    const { applications } = this.state;
+    const { applications } = this.props;
     const appCounts = {
       applied: 0,
       waiting: 0,
@@ -67,7 +65,7 @@ class Dashboard extends React.Component {
   filter(title) {
     if (title === 'applied') return this.setState({ filteredApps: null });
 
-    const { applications } = this.state;
+    const { applications } = this.props;
     const filteredApps = applications.filter(item => item.status === title);
     this.setState({
       filteredApps: filteredApps
@@ -80,7 +78,7 @@ class Dashboard extends React.Component {
     ));
   }
   render() {
-    const { applications } = this.state;
+    const { applications } = this.props;
     if (!applications) {
       return (
         <Client>

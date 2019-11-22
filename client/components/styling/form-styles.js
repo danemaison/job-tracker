@@ -40,6 +40,7 @@ const Input = styled.input`
 
 const TextArea = styled.textarea`
   border-radius: 5px;
+  position: relative;
   font-family: inherit;
   font-size: 1rem;
   padding: 10px;

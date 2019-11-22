@@ -34,7 +34,7 @@ const statusIcons = {
   waiting: { icon: faQuestionCircle, color: theme.yellow }
 };
 
-const formatDate = date => `${date.getMonth() + 1}/${date.getDate() + 1}/${date.getFullYear()}`;
+const formatDate = date => `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
 const Application = ({ toggleModal, data }) => {
   const { company, applied, status, interviewDate: interview, position } = data;

@@ -58,6 +58,10 @@ class AddApp extends React.Component {
   handleInterviewDayChange(day) {
     this.setState({ interviewDate: day });
   }
+  deleteApp() {
+    http
+      .delete();
+  }
   submit(e) {
     e.preventDefault();
     const { editingData, toggleModal } = this.props;
@@ -68,6 +72,7 @@ class AddApp extends React.Component {
       http
         .post('/api/add-application', this.state);
     }
+    this.props.getApplications();
     toggleModal();
   }
   componentDidUpdate(prevProps, prevState) {
@@ -106,10 +111,7 @@ class AddApp extends React.Component {
     return (
       <Wrapper open={open}>
         <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
-        {editingData &&
-          <DeleteButton>Delete</DeleteButton>
-        }
-
+        {editingData && <DeleteButton onClick={this.deleteApp}>Delete</DeleteButton>}
         <Form onSubmit={submit}>
           <Label>
             Company
