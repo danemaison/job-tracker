@@ -14,7 +14,7 @@ class App extends React.Component {
       modalOpen: false,
       editingData: null
     };
-    this.getApplications = this.getApplications.bind(this);
+    this.updateApplications = this.updateApplications.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
   }
   toggleModal(e, data) {
@@ -26,6 +26,22 @@ class App extends React.Component {
       .get('/api/applications')
       .then(applications => this.setState({ applications }));
   }
+  updateApplications(data, id) {
+    const { applications } = this.state;
+    if (id) {
+      data.id = id;
+      applications.unshift(data);
+      this.setState({ applications });
+      return;
+    }
+    for (let i = 0; i < applications.length; i++) {
+      if (applications[i].id === data.id) {
+        applications[i] = data;
+        this.setState({ applications });
+        return;
+      }
+    }
+  }
   componentDidMount() {
     this.getApplications();
   }
@@ -34,7 +50,7 @@ class App extends React.Component {
     return (
       <ThemeProvider theme={theme}>
         <Dashboard applications={applications} toggleModal={this.toggleModal}/>
-        <Modal getApplications={this.getApplications} open={modalOpen} editingData={editingData} toggleModal={this.toggleModal}/>
+        <Modal updateApplications={this.updateApplications} open={modalOpen} editingData={editingData} toggleModal={this.toggleModal}/>
         <ToggleModalButton open={modalOpen} toggleModal={this.toggleModal} />
       </ThemeProvider>
     );

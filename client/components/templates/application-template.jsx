@@ -34,12 +34,15 @@ const statusIcons = {
   waiting: { icon: faQuestionCircle, color: theme.yellow }
 };
 
-const formatDate = date => `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+const formatDate = date => {
+  if (typeof date.getDate !== 'function') date = new Date(date);
+  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+};
 
 const Application = ({ toggleModal, data }) => {
-  const { company, applied, status, interviewDate: interview, position } = data;
-  const applicationDate = formatDate(new Date(applied));
-  const interviewDate = interview && formatDate(new Date(interview));
+  const { company, applicationDate: applied, status, interviewDate: interview, position } = data;
+  const applicationDate = formatDate(applied);
+  const interviewDate = interview && formatDate(interview);
   return (
     <TableRow onClick={e => toggleModal(e, data)}>
       <Details>

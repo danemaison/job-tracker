@@ -64,15 +64,16 @@ class AddApp extends React.Component {
   }
   submit(e) {
     e.preventDefault();
-    const { editingData, toggleModal } = this.props;
+    const { editingData, toggleModal, updateApplications } = this.props;
+    const app = this.state;
     if (editingData) {
       http
-        .put('/api/update-application', this.state);
+        .put('/api/update-application', app);
     } else {
       http
-        .post('/api/add-application', this.state);
+        .post('/api/add-application', app)
+        .then(res => updateApplications(app, res.insertId));
     }
-    this.props.getApplications();
     toggleModal();
   }
   componentDidUpdate(prevProps, prevState) {

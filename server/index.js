@@ -8,7 +8,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 database.connect();
 
 app.get('/api/applications', (req, res) => {
-  const sql = 'SELECT * from applications ORDER BY applied DESC';
+  const sql = 'SELECT * from applications ORDER BY applicationDate DESC';
   database.query(sql,
     (error, result) => {
       if (error) throw error;
@@ -23,7 +23,7 @@ app.post('/api/add-application', (req, res) => {
   const applicationDate = req.body.applicationDate.split('T')[0];
 
   const sql = `INSERT INTO applications
-  (company, applied, status, interviewDate, user, position, notes)
+  (company, applicationDate, status, interviewDate, user, position, notes)
   VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   database.query(
@@ -42,7 +42,7 @@ app.put('/api/update-application', (req, res) => {
   const applicationDate = req.body.applicationDate.split('T')[0];
 
   const sql = `UPDATE applications
-  SET company = ?, applied = ?, status = ?, interviewDate = ?, position = ?, notes = ?
+  SET company = ?, applicationDate = ?, status = ?, interviewDate = ?, position = ?, notes = ?
   WHERE id = ${req.body.id}`;
 
   database.query(
