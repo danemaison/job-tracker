@@ -42,11 +42,6 @@ class Dashboard extends React.Component {
     };
     this.filter = this.filter.bind(this);
   }
-  // componentDidMount() {
-  //   http
-  //     .get('/api/applications')
-  //     .then(applications => this.setState({ applications }));
-  // }
   countApplications() {
     const { applications } = this.props;
     const appCounts = {

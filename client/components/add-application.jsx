@@ -64,6 +64,7 @@ class AddApp extends React.Component {
     http
       .delete(`/api/applications?app_id=${id}`)
       .then(res => console.log(res));
+    this.props.toggleModal();
   }
   submit(e) {
     e.preventDefault();
