@@ -16,3 +16,7 @@ input, textarea {
     appearance: none;
     border-radius: none;
 }
+
+.DayPickerInput-OverlayWrapper{
+  margin-top:-50px;
+}

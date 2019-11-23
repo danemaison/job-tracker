@@ -35,7 +35,7 @@ const statusIcons = {
 };
 
 const formatDate = date => {
-  if (typeof date.getDate !== 'function') date = new Date(date);
+  if (typeof date.getDate !== 'function') date = new Date(date.slice(0, 23));
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 };
 

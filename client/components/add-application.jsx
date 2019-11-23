@@ -53,10 +53,11 @@ class AddApp extends React.Component {
     this.setState({ [name]: value });
   }
   handleApplicationDateChange(day) {
-    this.setState({ applicationDate: day });
+    // converts date to SQL date for consistency
+    this.setState({ applicationDate: day.toISOString().slice(0, 10) });
   }
   handleInterviewDayChange(day) {
-    this.setState({ interviewDate: day });
+    this.setState({ interviewDate: day.toISOString().slice(0, 10) });
   }
   deleteApp() {
     http
@@ -66,6 +67,12 @@ class AddApp extends React.Component {
     e.preventDefault();
     const { editingData, toggleModal, updateApplications } = this.props;
     const app = this.state;
+    // look for formatting here from initial value app date
+    app.interviewDate = app.interviewDate && app.interviewDate + 'T00:00';
+    if (typeof app.applicationDate.getDate === 'function') {
+      app.applicationDate = app.applicationDate.toISOString().slice(0, 23);
+    }
+    app.applicationDate = app.applicationDate + 'T00:00';
     if (editingData) {
       http
         .put('/api/update-application', app)
