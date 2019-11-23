@@ -1,8 +1,11 @@
 {
-  "name": "study-harder",
+  "name": "job-hunt",
   "version": "1.0.0",
-  "description": "A grade tracking application",
+  "description": "An application to help manage job applications",
   "main": "server/index.js",
+  "engines": {
+    "node": "10.15.3"
+  },
   "scripts": {
     "build": "webpack --mode=production",
     "start": "NODE_ENV=production node -r dotenv/config .",
@@ -33,6 +36,8 @@
     "react": "16.8.6",
     "react-day-picker": "^7.4.0",
     "react-dom": "16.8.6",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
     "styled-components": "^4.4.1"
   },
   "devDependencies": {
@@ -74,9 +79,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/danemaison/study-harder/issues"
+    "url": "https://github.com/danemaison/job_tracker/issues"
   },
-  "homepage": "https://github.com/danemaison/study-harder#readme",
+  "homepage": "https://github.com/danemaison/job_tracker#readme",
   "eslintIgnore": [
     "server/public/main.js"
   ],
