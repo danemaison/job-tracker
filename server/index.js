@@ -54,6 +54,23 @@ app.put('/api/update-application', (req, res) => {
 
 });
 
+app.delete('/api/applications', (req, res) => {
+  const appId = req.query.app_id;
+  console.log(appId);
+  // if(!appId) throw error;
+  const sql = `DELETE FROM applications WHERE id = ?`;
+
+  // Implement res
+  database.query(
+    sql,
+    [appId],
+    (error, result) => {
+      if (error) throw error;
+      res.send(result);
+    }
+  );
+});
+
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${process.env.PORT}`);

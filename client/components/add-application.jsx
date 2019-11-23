@@ -59,9 +59,11 @@ class AddApp extends React.Component {
   handleInterviewDayChange(day) {
     this.setState({ interviewDate: day.toISOString().slice(0, 10) });
   }
-  deleteApp() {
+  deleteApp(id) {
+    console.log(id);
     http
-      .delete();
+      .delete(`/api/applications?app_id=${id}`)
+      .then(res => console.log(res));
   }
   submit(e) {
     e.preventDefault();
@@ -120,7 +122,11 @@ class AddApp extends React.Component {
     return (
       <Wrapper open={open}>
         <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
-        {editingData && <DeleteButton onClick={this.deleteApp}>Delete</DeleteButton>}
+        {editingData &&
+          <DeleteButton
+            onClick={() => { this.deleteApp(editingData.id); }}>
+              Delete
+          </DeleteButton>}
         <Form onSubmit={submit}>
           <Label>
             Company
