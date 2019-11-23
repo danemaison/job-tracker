@@ -29,9 +29,8 @@ class App extends React.Component {
   updateApplications(data, id, del) {
     const { applications } = this.state;
     if (del) {
-      const index = applications.findIndex(item => item.id === id);
-      applications.splice(index, 1);
-      this.setState({ applications });
+      const apps = applications.filter(item => item.id !== id);
+      this.setState({ applications: apps });
       return;
     }
     if (id) {

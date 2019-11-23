@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import http from '../lib/http';
 import Application from './templates/application-template';
 import StatusCard from './templates/status-card';
 import { Container, TableRow, Title, Row } from './ui/elements';
