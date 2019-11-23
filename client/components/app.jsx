@@ -26,21 +26,23 @@ class App extends React.Component {
       .get('/api/applications')
       .then(applications => this.setState({ applications }));
   }
-  updateApplications(data, id) {
+  updateApplications(data, id, del) {
     const { applications } = this.state;
+    if (del) {
+      const index = applications.findIndex(item => item.id === id);
+      applications.splice(index, 1);
+      this.setState({ applications });
+      return;
+    }
     if (id) {
       data.id = id;
       applications.unshift(data);
       this.setState({ applications });
       return;
     }
-    for (let i = 0; i < applications.length; i++) {
-      if (applications[i].id === data.id) {
-        applications[i] = data;
-        this.setState({ applications });
-        return;
-      }
-    }
+    const index = applications.findIndex(item => item.id === data.id);
+    applications[index] = data;
+    this.setState({ applications });
   }
   componentDidMount() {
     this.getApplications();

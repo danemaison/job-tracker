@@ -59,18 +59,19 @@ class AddApp extends React.Component {
   handleInterviewDayChange(day) {
     this.setState({ interviewDate: day.toISOString().slice(0, 10) });
   }
-  deleteApp(id) {
-    console.log(id);
+  deleteApp(data) {
+    const { toggleModal, updateApplications } = this.props;
     http
-      .delete(`/api/applications?app_id=${id}`)
+      .delete(`/api/applications?app_id=${data.id}`)
       .then(res => console.log(res));
-    this.props.toggleModal();
+    updateApplications(data, data.id, true);
+    toggleModal();
   }
   submit(e) {
     e.preventDefault();
     const { editingData, toggleModal, updateApplications } = this.props;
     const app = this.state;
-    // look for formatting here from initial value app date
+
     app.interviewDate = app.interviewDate && app.interviewDate + 'T00:00';
     if (typeof app.applicationDate.getDate === 'function') {
       app.applicationDate = app.applicationDate.toISOString().slice(0, 23);
@@ -125,7 +126,7 @@ class AddApp extends React.Component {
         <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
         {editingData &&
           <DeleteButton
-            onClick={() => { this.deleteApp(editingData.id); }}>
+            onClick={() => { this.deleteApp(editingData); }}>
               Delete
           </DeleteButton>}
         <Form onSubmit={submit}>
