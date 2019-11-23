@@ -4,14 +4,14 @@ import { theme } from './theme';
 
 const Wrapper = styled(Container)`
   position: fixed;
-  right: ${({ open }) => (open ? '0' : '-100%')};
-  top: 0;
+  right: 0;
+  top: ${({ open }) => (open ? '0' : '-100%')};
   width: 100%;
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   background-color: white;
   z-index: 1;
-  transition: 0.25s ease-out;
+  transition: 0.5s;
 `;
 
 const Form = styled.form`

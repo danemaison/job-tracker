@@ -9,6 +9,7 @@ class App extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
+        <img className="brand" src="/job_hunt.svg"></img>
         <Router>
           <Route exact path="/" component={Client} />
           <Route exact path="/login" component={Login} />

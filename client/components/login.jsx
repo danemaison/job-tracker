@@ -8,14 +8,13 @@ const Container = styled.div`
   flex-direction:column;
   align-items:center;
   justify-content:flex-start;
-  margin-top:45px;
-  width:100%:
-  height:100--vh;
+  margin-top:60px;
+  width:100%;
 `;
 const Header = styled.div`
   font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom:10px;
+  margin-bottom:15px;
 `;
 
 const Form = styled.form`
@@ -38,11 +37,38 @@ const LoginInput = styled(Input)`
   margin-bottom:25px;
 `;
 
+const StyledLink = styled(Link)`
+  font-size:.6rem;
+  margin-top:10px;
+  text-decoration:none;
+  color:${({ theme }) => theme.grey};
+  :hover{
+    border-bottom:1px solid ${({ theme }) => theme.grey};
+  }
+`;
+
+const SubHeader = styled.div`
+  color: ${({ theme }) => theme.grey};
+  font-size: .6rem;
+  margin-bottom:15px;
+`;
+const RegisterLink = styled(Link)`
+  color: ${({ theme }) => theme.blue};
+  text-decoration:none;
+  :hover{
+    border-bottom: 1px solid ${({ theme }) => theme.blue};
+  }
+`;
+
 class Login extends React.Component {
   render() {
     return (
       <Container>
         <Header>Login</Header>
+        <SubHeader>
+          Don&apos;t have an account?{' '}
+          <RegisterLink to="/register">Register</RegisterLink>
+        </SubHeader>
         <Form>
           <Label htmlFor="">
             Username
@@ -54,7 +80,7 @@ class Login extends React.Component {
           </Label>
           <Submit type="button" value="Login" />
         </Form>
-        <Link to="/">Continue as a guest</Link>
+        <StyledLink to="/">Continue as a guest</StyledLink>
         {/* <Link to={Register}>Register</Link> */}
       </Container>
     );

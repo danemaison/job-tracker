@@ -15,7 +15,7 @@ const Row = styled.div`
 `;
 
 const Title = styled.div`
-  font-size:2rem;
+  font-size:1.5rem;
   text-align:center;
   margin: 10px 0;
   font-weight:600;
