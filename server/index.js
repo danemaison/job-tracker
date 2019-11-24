@@ -71,6 +71,10 @@ app.delete('/api/applications', (req, res) => {
   );
 });
 
+app.post('/api/register', (req, res) => {
+  const sql = `INSERT INTO `;
+});
+
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${process.env.PORT}`);
