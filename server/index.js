@@ -114,7 +114,9 @@ app.post('/api/register', (req, res) => {
           if (err) throw err;
           database.query(sql, [username, hash], (err, result) => {
             if (err) throw err;
-            res.send(result);
+            const token = jwt.sign({ id: result.insertId }, process.env.TOKEN_SECRET);
+            res.cookie('logged-in', 'true');
+            res.cookie('auth-token', token, { httpOnly: true }).send({ token });
           });
         });
     }
@@ -134,9 +136,10 @@ app.post('/api/login', (req, res) => {
       if (err) throw err;
       if (isMatch) {
         const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
+        res.cookie('logged-in', 'true');
         res.cookie('auth-token', token, { httpOnly: true }).send({ token });
       } else {
-        // Do something
+        res.send({ error: 'Invalid username or password' });
       }
     });
   });

@@ -1,6 +1,7 @@
 import React from 'react';
 import http from '../lib/http';
 import styled from 'styled-components';
+import { Redirect } from 'react-router-dom';
 import {
   Container,
   Header,
@@ -12,6 +13,7 @@ import {
   RegisterLink
 } from './login';
 import { Submit } from './styling/form-styles';
+import AppContext from '../lib/context';
 
 const RegisterInput = styled(LoginInput)`
   border-color: ${({ theme, error }) => error ? theme.red : theme.grey};
@@ -34,7 +36,7 @@ class Register extends React.Component {
     this.setState({ [name]: value }, this.validate);
   }
   validate() {
-    const { username, password, confirmPassword } = this.state;
+    const { password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
       this.setState({ error: 'Passwords do not match' });
       return false;
@@ -49,11 +51,16 @@ class Register extends React.Component {
     const { username, password } = this.state;
     http
       .post('/api/register', { username, password })
-      .then(res => { console.log(res); });
+      .then(() => this.context.onLogin(true));
   }
   render() {
     const { handleChange, submit } = this;
     const { username, password, confirmPassword, error } = this.state;
+    if (this.context.isLoggedIn()) {
+      return (
+        <Redirect to='/' />
+      );
+    }
     return (
       <Container>
         <Header>Register</Header>
@@ -98,5 +105,7 @@ class Register extends React.Component {
     );
   }
 }
+
+Register.contextType = AppContext;
 
 export default Register;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import Client from './client';
 import Login from './login';
 import Register from './register';
@@ -11,8 +12,9 @@ import Nav from './nav';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const loggedIn = Cookies.get('logged-in');
     this.state = {
-      loggedIn: false
+      loggedIn: loggedIn || false
     };
     this.contextValue = {
       onLogin: this.onLogin.bind(this),
@@ -23,7 +25,7 @@ class App extends React.Component {
     this.setState({ loggedIn: value });
   }
   isLoggedIn() {
-    return this.state.loggedIn === true;
+    return this.state.loggedIn;
   }
   render() {
     return (

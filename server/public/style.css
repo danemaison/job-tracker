@@ -17,14 +17,6 @@ input, textarea {
     border-radius: none;
 }
 
-.brand{
-  width:75px;
-  top:10px;
-  left:50%;
-  transform: translate(-50%);
-  position: absolute;
-}
-
 .DayPickerInput-OverlayWrapper{
   margin-top:-50px;
 }

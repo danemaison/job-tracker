@@ -89,7 +89,6 @@ class Login extends React.Component {
     const { username, password } = this.state;
     const { handleChange, submit } = this;
     if (this.context.isLoggedIn()) {
-      console.log('hello');
       return <Redirect to="/" />;
     }
     return (
