@@ -5,7 +5,7 @@ import StatusCard from './templates/status-card';
 import { Container, TableRow, Title, Row } from './ui/elements';
 
 const Client = styled(Container)`
-margin-top:35px;
+  margin-top:35px;
   height: calc(100vh - 35px);
   height: calc(var(--vh, 1vh) * 100 - 35px);
   overflow:hidden;
@@ -92,7 +92,12 @@ class Dashboard extends React.Component {
         <Title>Dashboard</Title>
         <HeaderCardRow>
           {Object.keys(appCounts).map((item, index) => (
-            <StatusCard filter={this.filter} key={index} title={item} count={appCounts[item]} />
+            <StatusCard
+              filter={this.filter}
+              key={index}
+              title={item}
+              count={appCounts[item]}
+            />
           ))}
         </HeaderCardRow>
         <HeaderRow>

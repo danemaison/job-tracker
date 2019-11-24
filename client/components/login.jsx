@@ -1,8 +1,9 @@
 import React from 'react';
 import http from '../lib/http';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { Input, Submit } from './styling/form-styles';
+import AppContext from '../lib/context';
 
 export const Container = styled.div`
   display:flex;
@@ -78,11 +79,19 @@ class Login extends React.Component {
     e.preventDefault();
     http
       .post('/api/login', this.state)
-      .then(res => console.log(res));
+      .then(res => {
+        if (res.token) {
+          this.context.onLogin(true);
+        }
+      });
   }
   render() {
     const { username, password } = this.state;
     const { handleChange, submit } = this;
+    if (this.context.isLoggedIn()) {
+      console.log('hello');
+      return <Redirect to="/" />;
+    }
     return (
       <Container>
         <Header>Login</Header>
@@ -116,5 +125,7 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.contextType = AppContext;
 
 export default Login;

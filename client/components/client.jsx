@@ -1,12 +1,13 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import Dashboard from './dashboard';
 import ToggleModalButton from './ui/add-button';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './styling/theme';
+import styled from 'styled-components';
 import Modal from './add-application';
 import http from '../lib/http';
+import AppContext from '../lib/context';
 
-class App extends React.Component {
+class Client extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,15 +49,21 @@ class App extends React.Component {
   }
   render() {
     const { modalOpen, editingData, applications } = this.state;
+    if (!this.context.isLoggedIn()) {
+      return (
+        <Redirect to="/login"/>
+      );
+    }
     return (
       <>
         <Dashboard applications={applications} toggleModal={this.toggleModal}/>
         <Modal updateApplications={this.updateApplications} open={modalOpen} editingData={editingData} toggleModal={this.toggleModal}/>
         <ToggleModalButton open={modalOpen} toggleModal={this.toggleModal} />
-
       </>
     );
   }
 }
 
-export default App;
+Client.contextType = AppContext;
+
+export default Client;

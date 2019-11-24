@@ -2,24 +2,31 @@ const path = require('path');
 const express = require('express');
 const database = require('./database');
 const bcrypt = require('bcryptjs');
-const sessions = require('./sessions');
+const authorize = require('./authorize');
+const cookieParser = require('cookie-parser');
+const { ApiError, errorHandler } = require('./errors');
+const jwt = require('jsonwebtoken');
 
 const app = express();
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 database.connect();
 
-app.get('/api/applications', (req, res) => {
-  const sql = 'SELECT * from applications ORDER BY applicationDate DESC';
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+
+app.get('/api/applications', authorize, (req, res) => {
+  const sql =
+    'SELECT * from applications WHERE user = ? ORDER BY applicationDate DESC';
+  const params = [req.user.id];
   database.query(sql,
+    params,
     (err, result) => {
       if (err) throw err;
       res.send(result);
     });
-
 });
 
-app.post('/api/add-application', (req, res) => {
+app.post('/api/add-application', authorize, (req, res) => {
   const { company, position, status, notes } = req.body;
   const interviewDate = req.body.interviewDate.split('T')[0];
   const applicationDate = req.body.applicationDate.split('T')[0];
@@ -28,16 +35,26 @@ app.post('/api/add-application', (req, res) => {
   (company, applicationDate, status, interviewDate, user, position, notes)
   VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
+  const params = [
+    company,
+    applicationDate,
+    status,
+    interviewDate || null,
+    req.user.id,
+    position,
+    notes || null];
+
   database.query(
     sql,
-    [company, applicationDate, status, interviewDate || null, 1, position, notes || null], (err, result) => {
+    params,
+    (err, result) => {
       if (err) throw err;
       res.send(result);
     });
 });
 
-app.put('/api/update-application', (req, res) => {
-  const { company, position, status, notes } = req.body;
+app.put('/api/update-application', authorize, (req, res) => {
+  const { company, position, status, notes, id } = req.body;
   const interviewDate = req.body.interviewDate && req.body.interviewDate.split(
     'T'
   )[0];
@@ -45,27 +62,39 @@ app.put('/api/update-application', (req, res) => {
 
   const sql = `UPDATE applications
   SET company = ?, applicationDate = ?, status = ?, interviewDate = ?, position = ?, notes = ?
-  WHERE id = ${req.body.id}`;
+  WHERE id = ? AND user = ?`;
+
+  const params = [
+    company,
+    applicationDate,
+    status,
+    interviewDate || null,
+    position,
+    notes || null,
+    id,
+    req.user.id
+  ];
 
   database.query(
     sql,
-    [company, applicationDate, status, interviewDate || null, position, notes || null], (err, result) => {
+    params, (err, result) => {
       if (err) throw err;
       res.send(result);
     });
 
 });
 
-app.delete('/api/applications', (req, res) => {
+app.delete('/api/applications', authorize, (req, res) => {
   const appId = req.query.app_id;
-  console.log(appId);
-  // if(!appId) throw error;
-  const sql = `DELETE FROM applications WHERE id = ?`;
+  // if (!appId) throw error;
+
+  const sql = `DELETE FROM applications WHERE id = ? AND user = ?`;
+  const params = [appId, req.user.id];
 
   // Implement res
   database.query(
     sql,
-    [appId],
+    params,
     (err, result) => {
       if (err) throw err;
       res.send(result);
@@ -74,11 +103,12 @@ app.delete('/api/applications', (req, res) => {
 });
 
 app.post('/api/register', (req, res) => {
-  console.log(req.body);
   let { username, password } = req.body;
   const sql = `INSERT INTO users SET username = ?, password = ?`;
+
   bcrypt
-    .genSalt(10, (err, salt) =>
+    .genSalt(10, (err, salt) => {
+      if (err) throw err;
       bcrypt
         .hash(password, salt, (err, hash) => {
           if (err) throw err;
@@ -86,20 +116,30 @@ app.post('/api/register', (req, res) => {
             if (err) throw err;
             res.send(result);
           });
-        })
+        });
+    }
     );
 
 });
 
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
+
   const sql = 'SELECT id, password FROM users WHERE username = ?';
+
   database.query(sql, [username], (err, result) => {
     if (err) throw err;
-    console.log(result);
-    res.send(result);
+    const user = result[0];
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) throw err;
+      if (isMatch) {
+        const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
+        res.cookie('auth-token', token, { httpOnly: true }).send({ token });
+      } else {
+        // Do something
+      }
+    });
   });
-  // bcrypt.compare(password, )
 });
 
 app.listen(process.env.PORT, () => {

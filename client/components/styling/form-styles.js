@@ -5,7 +5,7 @@ import { theme } from './theme';
 const Wrapper = styled(Container)`
   position: fixed;
   right: 0;
-  top: ${({ open }) => (open ? '0' : '-100%')};
+  top: ${({ open }) => (open ? '0' : '-100vh')};
   width: 100%;
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
