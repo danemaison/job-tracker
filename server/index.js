@@ -1,7 +1,8 @@
 const path = require('path');
 const express = require('express');
 const database = require('./database');
-const mysql = require('mysql');
+const bcrypt = require('bcryptjs');
+const session = require('express-session');
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -10,8 +11,8 @@ database.connect();
 app.get('/api/applications', (req, res) => {
   const sql = 'SELECT * from applications ORDER BY applicationDate DESC';
   database.query(sql,
-    (error, result) => {
-      if (error) throw error;
+    (err, result) => {
+      if (err) throw err;
       res.send(result);
     });
 
@@ -28,8 +29,8 @@ app.post('/api/add-application', (req, res) => {
 
   database.query(
     sql,
-    [company, applicationDate, status, interviewDate || null, 1, position, notes || null], (error, result) => {
-      if (error) throw error;
+    [company, applicationDate, status, interviewDate || null, 1, position, notes || null], (err, result) => {
+      if (err) throw err;
       res.send(result);
     });
 });
@@ -47,8 +48,8 @@ app.put('/api/update-application', (req, res) => {
 
   database.query(
     sql,
-    [company, applicationDate, status, interviewDate || null, position, notes || null], (error, result) => {
-      if (error) throw error;
+    [company, applicationDate, status, interviewDate || null, position, notes || null], (err, result) => {
+      if (err) throw err;
       res.send(result);
     });
 
@@ -64,15 +65,29 @@ app.delete('/api/applications', (req, res) => {
   database.query(
     sql,
     [appId],
-    (error, result) => {
-      if (error) throw error;
+    (err, result) => {
+      if (err) throw err;
       res.send(result);
     }
   );
 });
 
 app.post('/api/register', (req, res) => {
-  const sql = `INSERT INTO `;
+  console.log(req.body);
+  let { username, password } = req.body;
+  const sql = `INSERT INTO users SET username = ?, password = ?`;
+  bcrypt
+    .genSalt(10, (err, salt) =>
+      bcrypt
+        .hash(password, salt, (err, hash) => {
+          if (err) throw err;
+          database.query(sql, [username, hash], (err, result) => {
+            if (err) throw err;
+            res.send(result);
+          });
+        })
+    );
+
 });
 
 app.listen(process.env.PORT, () => {
