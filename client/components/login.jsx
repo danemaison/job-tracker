@@ -51,7 +51,7 @@ export const StyledLink = styled(Link)`
 export const SubHeader = styled.div`
   color: ${({ theme }) => theme.grey};
   font-size: .6rem;
-  margin-bottom:15px;
+  margin-bottom:10px;
 `;
 export const RegisterLink = styled(Link)`
   color: ${({ theme }) => theme.blue};
@@ -61,12 +61,27 @@ export const RegisterLink = styled(Link)`
   }
 `;
 
+export const ErrorDisplay = styled.div`
+  font-size: 0.5rem;
+  background-color: ${({ error }) => error ? '#ff7d7a' : 'transparent'};
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 208px;
+  height: 15px;
+  border: transparent;
+  border-radius: 5px;
+  margin-bottom: 10px;
+`;
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      error: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
@@ -80,13 +95,15 @@ class Login extends React.Component {
     http
       .post('/api/login', this.state)
       .then(res => {
-        if (res.token) {
+        if (res.error) {
+          this.setState({ error: res.error });
+        } else if (res.token) {
           this.context.onLogin(true);
         }
       });
   }
   render() {
-    const { username, password } = this.state;
+    const { username, password, error } = this.state;
     const { handleChange, submit } = this;
     if (this.context.isLoggedIn()) {
       return <Redirect to="/" />;
@@ -98,6 +115,7 @@ class Login extends React.Component {
           Don&apos;t have an account?{' '}
           <RegisterLink to="/register">Register</RegisterLink>
         </SubHeader>
+        <ErrorDisplay error={error}>{error.message}</ErrorDisplay>
         <Form onSubmit={submit}>
           <Label>
             Username

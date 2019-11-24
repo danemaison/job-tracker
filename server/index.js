@@ -4,7 +4,6 @@ const database = require('./database');
 const bcrypt = require('bcryptjs');
 const authorize = require('./authorize');
 const cookieParser = require('cookie-parser');
-const { ApiError, errorHandler } = require('./errors');
 const jwt = require('jsonwebtoken');
 
 const app = express();
@@ -104,13 +103,19 @@ app.delete('/api/applications', authorize, (req, res) => {
 
 app.post('/api/register', (req, res) => {
   let { username, password } = req.body;
-  const sql = `INSERT INTO users SET username = ?, password = ?`;
+  let sql = `SELECT id FROM users WHERE username = ?`;
 
-  bcrypt
-    .genSalt(10, (err, salt) => {
-      if (err) throw err;
-      bcrypt
-        .hash(password, salt, (err, hash) => {
+  database.query(sql, [username], (err, result) => {
+    if (err) throw err;
+    if (result.length > 0) {
+      res.send({ error: { type: 'username',
+        message: 'Invalid username' }
+      });
+    } else {
+      sql = `INSERT INTO users SET username = ?, password = ?`;
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) throw err;
+        bcrypt.hash(password, salt, (err, hash) => {
           if (err) throw err;
           database.query(sql, [username, hash], (err, result) => {
             if (err) throw err;
@@ -119,8 +124,9 @@ app.post('/api/register', (req, res) => {
             res.cookie('auth-token', token, { httpOnly: true }).send({ token });
           });
         });
+      });
     }
-    );
+  });
 
 });
 
@@ -131,6 +137,10 @@ app.post('/api/login', (req, res) => {
 
   database.query(sql, [username], (err, result) => {
     if (err) throw err;
+    if (!result.length) {
+      res.send({ error: { message: 'Invalid username or password' } });
+      return;
+    }
     const user = result[0];
     bcrypt.compare(password, user.password, (err, isMatch) => {
       if (err) throw err;
@@ -139,7 +149,7 @@ app.post('/api/login', (req, res) => {
         res.cookie('logged-in', 'true');
         res.cookie('auth-token', token, { httpOnly: true }).send({ token });
       } else {
-        res.send({ error: 'Invalid username or password' });
+        res.send({ error: { message: 'Invalid username or password' } });
       }
     });
   });

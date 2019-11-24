@@ -16,9 +16,9 @@ const Row = styled.div`
 
 const Title = styled.div`
   font-size:1.5rem;
-  text-align:center;
+  text-align:left;
   width:94%
-  margin: 15px auto;
+  margin: 15px 0;
   font-weight:600;
 `;
 

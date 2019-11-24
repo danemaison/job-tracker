@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-const AddButton = styled(FontAwesomeIcon)`
+export const AddButton = styled(FontAwesomeIcon)`
   font-size: 1.3rem;
   color: ${({ theme }) => theme.blue};
   transition: .25s ease-out;

@@ -11,17 +11,6 @@ const api = {
   put(url, body) {
     return this.send('PUT', url, body);
   },
-  upload(url, formData) {
-    const req = {
-      method: 'POST',
-      body: formData
-    };
-    return fetch(url, req).then(res => {
-      if (res.headers.get('Content-Type') === 'application/json') {
-        return res.json();
-      }
-    });
-  },
   send(method, url, body) {
     const req = {
       method

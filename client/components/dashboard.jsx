@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import Application from './templates/application-template';
 import StatusCard from './templates/status-card';
 import { Container, TableRow, Title, Row } from './ui/elements';
+import { AddButton } from './ui/add-button';
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Client = styled(Container)`
   margin-top:35px;
@@ -34,13 +37,71 @@ const HeaderCardRow = styled(Row)`
   width:94%;
 `;
 
+const Loader = styled.img`
+  margin-top:35px;
+  width:30px;
+  height:30px;
+`;
+
+const Prompt = styled.div`
+line-height:50px;
+  text-align:center;
+  font-size: 1rem;
+  font-weight:400;
+
+`;
+const TapPrompt = styled.div`
+  font-size:.5rem;
+  margin-bottom: 15px;
+  margin-left:2px;
+  margin-top:-10px;
+  text-align:left;
+  color: ${({ theme }) => theme.grey};
+  width:94%;
+`;
+
+const HeaderWrapper = styled.div`
+  width: 94%;
+  display:flex;
+  align-items:center;
+  margin: 0 auto;
+`;
+const TitleDiv = styled.div`
+  display:inline-block;
+  width:50%;
+`;
+const SearchDiv = styled.div`
+  position:relative;
+  display:inline-block;
+  text-align:right;
+  width:50%;
+`;
+const Search = styled.input`
+  font-size:.6rem;
+  color: ${({ theme }) => theme.grey};
+  border: 1px solid ${({ theme }) => theme.grey};
+  width: 75%;
+  padding: 5px 10px;
+  border-radius: 15px;
+  height: 15px;
+`;
+
+const SearchIcon = styled(FontAwesomeIcon)`
+  position:absolute;
+  font-size:.8rem;
+  color: ${({ theme }) => theme.grey};
+  top:6px;
+  right:11px;
+`;
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filteredApps: null
+      filteredApps: null,
+      search: ''
     };
     this.filter = this.filter.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
   countApplications() {
     const { applications } = this.props;
@@ -72,6 +133,10 @@ class Dashboard extends React.Component {
       <Application toggleModal={toggleModal} key={application.id} data={application} />
     ));
   }
+  handleSearch(e) {
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value });
+  }
   render() {
     const { applications } = this.props;
     if (!applications) {
@@ -79,17 +144,45 @@ class Dashboard extends React.Component {
         <Client>
           <Title>Dashboard</Title>
           <Row>
-            <h3>No applications</h3>
+            <Loader src="/loader.gif" />
+          </Row>
+        </Client>
+      );
+    } else if (!applications.length) {
+      return (
+        <Client>
+          <Title>Dashboard</Title>
+          <Row>
+            <Prompt>
+              Click the <br/>
+              <AddButton icon={faPlus}/> <br/>
+              below to start tracking an application
+            </Prompt>
           </Row>
         </Client>
       );
     }
     const appCounts = this.countApplications();
-
-    const { filteredApps } = this.state;
+    const { handleSearch } = this;
+    const { filteredApps, search } = this.state;
     return (
       <Client>
-        <Title>Dashboard</Title>
+        <HeaderWrapper>
+          <TitleDiv>
+            <Title>Dashboard</Title>
+            <TapPrompt>Tap to filter by status</TapPrompt>
+          </TitleDiv>
+          <SearchDiv>
+            <Search
+              type="text"
+              name="search"
+              onChange={handleSearch}
+              placeholder="Search for a company"
+              value={search}
+            />
+            <SearchIcon icon={faSearch}/>
+          </SearchDiv>
+        </HeaderWrapper>
         <HeaderCardRow>
           {Object.keys(appCounts).map((item, index) => (
             <StatusCard

@@ -10,13 +10,13 @@ import {
   LoginInput,
   StyledLink,
   SubHeader,
-  RegisterLink
+  RegisterLink,
+  ErrorDisplay
 } from './login';
 import { Submit } from './styling/form-styles';
 import AppContext from '../lib/context';
 
 const RegisterInput = styled(LoginInput)`
-  border-color: ${({ theme, error }) => error ? theme.red : theme.grey};
 `;
 
 class Register extends React.Component {
@@ -38,7 +38,10 @@ class Register extends React.Component {
   validate() {
     const { password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
-      this.setState({ error: 'Passwords do not match' });
+      const error = {
+        type: 'password',
+        message: 'Passwords do not match' };
+      this.setState({ error });
       return false;
     } else {
       this.setState({ error: '' });
@@ -51,7 +54,13 @@ class Register extends React.Component {
     const { username, password } = this.state;
     http
       .post('/api/register', { username, password })
-      .then(() => this.context.onLogin(true));
+      .then(res => {
+        if (res.error) {
+          this.setState({ error: res.error });
+        } else if (res.token) {
+          this.context.onLogin(true);
+        }
+      });
   }
   render() {
     const { handleChange, submit } = this;
@@ -65,9 +74,9 @@ class Register extends React.Component {
       <Container>
         <Header>Register</Header>
         <SubHeader>
-          Have have an account? {' '}
-          <RegisterLink to="/login">Login</RegisterLink>
+          Have have an account? <RegisterLink to="/login">Login</RegisterLink>
         </SubHeader>
+        <ErrorDisplay error={error}>{error.message}</ErrorDisplay>
         <Form onSubmit={submit}>
           <Label>
             Username
@@ -76,27 +85,28 @@ class Register extends React.Component {
               value={username}
               name="username"
               type="text"
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </Label>
           <Label>
             Password
             <RegisterInput
-              error={error}
               required
               value={password}
               name="password"
               type="password"
-              onChange={handleChange} />
+              onChange={handleChange}
+            />
           </Label>
           <Label>
             Confirm Password
             <RegisterInput
-              error={error}
               required
               value={confirmPassword}
               name="confirmPassword"
               type="password"
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </Label>
           <Submit type="submit" value="Register" />
         </Form>
