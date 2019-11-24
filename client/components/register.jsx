@@ -48,7 +48,7 @@ class Register extends React.Component {
     if (!this.validate()) return false;
     const { username, password } = this.state;
     http
-      .post('api/register', { username, password })
+      .post('/api/register', { username, password })
       .then(res => { console.log(res); });
   }
   render() {

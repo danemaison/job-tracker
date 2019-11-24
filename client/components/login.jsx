@@ -1,4 +1,5 @@
 import React from 'react';
+import http from '../lib/http';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Input, Submit } from './styling/form-styles';
@@ -60,7 +61,28 @@ export const RegisterLink = styled(Link)`
 `;
 
 class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: ''
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.submit = this.submit.bind(this);
+  }
+  handleChange(e) {
+    const { name, value } = e.currentTarget;
+    this.setState({ [name]: value });
+  }
+  submit(e) {
+    e.preventDefault();
+    http
+      .post('/api/login', this.state)
+      .then(res => console.log(res));
+  }
   render() {
+    const { username, password } = this.state;
+    const { handleChange, submit } = this;
     return (
       <Container>
         <Header>Login</Header>
@@ -68,16 +90,26 @@ class Login extends React.Component {
           Don&apos;t have an account?{' '}
           <RegisterLink to="/register">Register</RegisterLink>
         </SubHeader>
-        <Form>
-          <Label htmlFor="">
+        <Form onSubmit={submit}>
+          <Label>
             Username
-            <LoginInput name="username" type="text" />
+            <LoginInput
+              value={username}
+              onChange={handleChange}
+              name="username"
+              type="text"
+            />
           </Label>
-          <Label htmlFor="">
+          <Label>
             Password
-            <LoginInput name="password" type="password" />
+            <LoginInput
+              value={password}
+              onChange={handleChange}
+              name="password"
+              type="password"
+            />
           </Label>
-          <Submit type="button" value="Login" />
+          <Submit type="submit" value="Login" />
         </Form>
         <StyledLink to="/">Continue as a guest</StyledLink>
       </Container>

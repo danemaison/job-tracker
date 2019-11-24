@@ -2,7 +2,8 @@ const path = require('path');
 const express = require('express');
 const database = require('./database');
 const bcrypt = require('bcryptjs');
-const session = require('express-session');
+const sessions = require('./sessions');
+
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -88,6 +89,17 @@ app.post('/api/register', (req, res) => {
         })
     );
 
+});
+
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  const sql = 'SELECT id, password FROM users WHERE username = ?';
+  database.query(sql, [username], (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
+  });
+  // bcrypt.compare(password, )
 });
 
 app.listen(process.env.PORT, () => {
