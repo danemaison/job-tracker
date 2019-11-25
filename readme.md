@@ -11,6 +11,7 @@
 * react-router
 * Webpack
 * styled components
+
 # Live Site
 
 Try it out live at: https://job--hunt.herokuapp.com
@@ -21,7 +22,12 @@ If you don't want to register, use the guest login located below the login butto
 
 * User can register and login and logout
 * User can add applications to their dashboard
-* User can specify what date they applied, the company they applied to, the position they applied for, the status of their application, the date of an upcoming interview, and any notes about the job posting.
+* User can specify what date they applied,
+  the company they applied to,
+  the position they applied for,
+  the status of their application,
+  the date of an upcoming interview,
+  and any notes about the job posting
 * User can filter applications by their status (waiting, interview, rejected)
 * User can search for specific companies they have applied for
 * User can edit all parts of the tracked application

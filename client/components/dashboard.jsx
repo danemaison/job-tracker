@@ -191,6 +191,7 @@ class Dashboard extends React.Component {
               name="search"
               onChange={handleSearch}
               placeholder="Search for a company"
+              autoComplete="off"
               value={search}
             />
             <SearchIcon icon={faSearch}/>
