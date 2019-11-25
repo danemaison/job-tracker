@@ -2,30 +2,29 @@ const path = require('path');
 const express = require('express');
 const database = require('./database');
 const bcrypt = require('bcryptjs');
+const sessions = require('./sessions');
 const authorize = require('./authorize');
-const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
+const { ApiError, errorHandler } = require('./errors');
 
 const app = express();
-// database.connect();
 
+app.use(sessions);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
 
-app.get('/api/applications', authorize, (req, res) => {
+app.get('/api/applications', authorize, (req, res, next) => {
   const sql =
     'SELECT * from applications WHERE user = ? ORDER BY applicationDate DESC';
-  const params = [req.user.id];
+  const params = [req.session.userId];
   database.query(sql,
     params,
     (err, result) => {
-      if (err) throw err;
+      if (err) next(err);
       res.send(result);
     });
 });
 
-app.post('/api/add-application', authorize, (req, res) => {
+app.post('/api/add-application', authorize, (req, res, next) => {
   const { company, position, status, notes } = req.body;
   const interviewDate = req.body.interviewDate.split('T')[0];
   const applicationDate = req.body.applicationDate.split('T')[0];
@@ -39,7 +38,7 @@ app.post('/api/add-application', authorize, (req, res) => {
     applicationDate,
     status,
     interviewDate || null,
-    req.user.id,
+    req.session.userId,
     position,
     notes || null];
 
@@ -47,12 +46,12 @@ app.post('/api/add-application', authorize, (req, res) => {
     sql,
     params,
     (err, result) => {
-      if (err) throw err;
+      if (err) next(err);
       res.send(result);
     });
 });
 
-app.put('/api/update-application', authorize, (req, res) => {
+app.put('/api/update-application', authorize, (req, res, next) => {
   const { company, position, status, notes, id } = req.body;
   const interviewDate = req.body.interviewDate && req.body.interviewDate.split(
     'T'
@@ -71,59 +70,58 @@ app.put('/api/update-application', authorize, (req, res) => {
     position,
     notes || null,
     id,
-    req.user.id
+    req.session.userId
   ];
 
   database.query(
     sql,
     params, (err, result) => {
-      if (err) throw err;
+      if (err) next(err);
       res.send(result);
     });
 
 });
 
-app.delete('/api/applications', authorize, (req, res) => {
+app.delete('/api/applications', authorize, (req, res, next) => {
   const appId = req.query.app_id;
   if (!appId) {
-    res.send({ error: 'Invalid item' });
-    return;
+    return next(new ApiError(400, 'Invalid app id'));
   }
 
   const sql = `DELETE FROM applications WHERE id = ? AND user = ?`;
-  const params = [appId, req.user.id];
+  const params = [appId, req.session.userId];
 
   database.query(
     sql,
     params,
     (err, result) => {
-      if (err) throw err;
+      if (err) next(err);
       res.send(result);
     }
   );
 });
 
-app.post('/api/register', (req, res) => {
+app.post('/api/register', (req, res, next) => {
   let { username, password } = req.body;
   let sql = `SELECT id FROM users WHERE username = ?`;
 
   database.query(sql, [username], (err, result) => {
-    if (err) throw err;
+    if (err) next(err);
     if (result.length > 0) {
-      res.send({ error: { type: 'username',
-        message: 'Invalid username' }
-      });
+      return next(new ApiError(400, 'Invalid username'));
     } else {
       sql = `INSERT INTO users SET username = ?, password = ?`;
       bcrypt.genSalt(10, (err, salt) => {
-        if (err) throw err;
+        if (err) next(err);
         bcrypt.hash(password, salt, (err, hash) => {
-          if (err) throw err;
+          if (err) next(err);
           database.query(sql, [username, hash], (err, result) => {
-            if (err) throw err;
-            const token = jwt.sign({ id: result.insertId }, process.env.TOKEN_SECRET);
-            res.cookie('logged-in', 'true');
-            res.cookie('auth-token', token, { httpOnly: true }).send({ token });
+            if (err) next(err);
+            req.session.regenerate(err => {
+              if (err) return next(err);
+              req.session.userId = result.insertId;
+              res.status(201).json(result);
+            });
           });
         });
       });
@@ -132,42 +130,63 @@ app.post('/api/register', (req, res) => {
 
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', (req, res, next) => {
   const { username, password } = req.body;
-
+  if (!username || !password) {
+    return next(new ApiError(400, 'Invalid Login'));
+  }
   const sql = 'SELECT id, password FROM users WHERE username = ?';
 
   database.query(sql, [username], (err, result) => {
-    if (err) throw err;
+    if (err) next(err);
     if (!result.length) {
-      res.send({ error: { message: 'Invalid username or password' } });
-      return;
+      return next(new ApiError(401, 'Invalid username or password'));
     }
     const user = result[0];
     bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err) throw err;
+      if (err) next(err);
       if (isMatch) {
-        const token = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET);
-        res.cookie('logged-in', 'true');
-        res.cookie('auth-token', token, { httpOnly: true }).send({ token });
+        req.session.regenerate(err => {
+          if (err) return next(err);
+          req.session.userId = user.id;
+          res.status(201).json(result);
+        });
       } else {
-        res.send({ error: { message: 'Invalid username or password' } });
+        return next(new ApiError(401, 'Invalid username or password'));
       }
     });
   });
 });
 
-app.post('/api/logout', (req, res) => {
-  res.clearCookie('auth-token');
-  res.clearCookie('logged-in');
-  res.send({ message: 'Logged out' });
+app.get('/api/auth', (req, res, next) => {
+  if (!req.session.userId) {
+    return res.json({ user: null });
+  }
+  return res.json({ user: req.session.userId });
 });
 
-app.post('/api/guest-login', (req, res) => {
-  const token = jwt.sign({ id: 1 }, process.env.TOKEN_SECRET);
-  res.cookie('logged-in', 'true');
-  res.cookie('auth-token', token, { httpOnly: true }).send({ token });
+app.post('/api/logout', authorize, (req, res, next) => {
+  req.session.destroy();
+  res.json('logout');
 });
+
+app.post('/api/guest-login', (req, res, next) => {
+  req.session.regenerate(err => {
+    if (err) return next(err);
+    req.session.userId = 1;
+    res.status(201).json(1);
+  });
+});
+
+app.use('/api/*', (req, res, next) => {
+  next(new ApiError(404, `Cannot ${req.method} ${req.originalUrl}.`));
+});
+
+app.get('*', (req, res, next) => {
+  res.sendFile(path.join(__dirname, 'public/index.html'));
+});
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console

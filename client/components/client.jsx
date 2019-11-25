@@ -2,7 +2,6 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import Dashboard from './dashboard';
 import ToggleModalButton from './ui/add-button';
-import styled from 'styled-components';
 import Modal from './add-application';
 import http from '../lib/http';
 import AppContext from '../lib/context';

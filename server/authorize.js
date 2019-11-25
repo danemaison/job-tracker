@@ -1,24 +1,11 @@
-const jwt = require('jsonwebtoken');
-
-function authorize(req, res, next) {
-  const token = req.cookies['auth-token'];
-  if (!token) {
-    return res.status(401).json({
-      error: 'Unauthorized',
-      message: 'Authentication is required.'
-    });
+const authorize = (req, res, next) => {
+  if (req.session && req.session.userId) {
+    return next();
   }
-  try {
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.user = verified;
-    next();
-  } catch (err) {
-    res.status(400).json({
-      error: 'Unauthorized',
-      message: 'Invalid Token'
-    });
-  }
-
-}
+  res.status(401).json({
+    error: 'Unauthorized',
+    message: 'Authentication is required'
+  });
+};
 
 module.exports = authorize;

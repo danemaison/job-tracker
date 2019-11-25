@@ -1,4 +1,6 @@
-.env
+server/public/main.js*
+server/sessions/*
 node_modules/
 .DS_Store
-server/public/main.js*
+!.gitkeep
+.env

@@ -8,7 +8,6 @@ import {
   Form,
   Label,
   LoginInput,
-  StyledLink,
   SubHeader,
   RegisterLink,
   ErrorDisplay
@@ -38,10 +37,7 @@ class Register extends React.Component {
   validate() {
     const { password, confirmPassword } = this.state;
     if (password !== confirmPassword) {
-      const error = {
-        type: 'password',
-        message: 'Passwords do not match' };
-      this.setState({ error });
+      this.setState({ error: 'Passwords do not match' });
       return false;
     } else {
       this.setState({ error: '' });
@@ -57,9 +53,7 @@ class Register extends React.Component {
       .then(res => {
         if (res.error) {
           this.setState({ error: res.error });
-        } else if (res.token) {
-          this.context.onLogin(true);
-        }
+        } else this.context.onLogin(true);
       });
   }
   render() {
@@ -76,7 +70,7 @@ class Register extends React.Component {
         <SubHeader>
           Have have an account? <RegisterLink to="/login">Login</RegisterLink>
         </SubHeader>
-        <ErrorDisplay error={error}>{error.message}</ErrorDisplay>
+        <ErrorDisplay error={error}>{error}</ErrorDisplay>
         <Form onSubmit={submit}>
           <Label>
             Username

@@ -101,18 +101,14 @@ class Login extends React.Component {
       .then(res => {
         if (res.error) {
           this.setState({ error: res.error });
-        } else if (res.token) {
-          this.context.onLogin(true);
-        }
+        } else this.context.onLogin(true);
       });
   }
   guestLogin() {
     http
       .post('/api/guest-login')
       .then(res => {
-        if (res.token) {
-          this.context.onLogin(true);
-        }
+        if (res) this.context.onLogin(true);
       });
   }
   render() {
@@ -128,7 +124,7 @@ class Login extends React.Component {
           Don&apos;t have an account?{' '}
           <RegisterLink to="/register">Register</RegisterLink>
         </SubHeader>
-        <ErrorDisplay error={error}>{error.message}</ErrorDisplay>
+        <ErrorDisplay error={error}>{error}</ErrorDisplay>
         <Form onSubmit={submit}>
           <Label>
             Username
