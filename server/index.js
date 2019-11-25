@@ -155,6 +155,12 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+app.post('/api/logout', (req, res) => {
+  res.clearCookie('auth-token');
+  res.clearCookie('logged-in');
+  res.send({ message: 'Logged out' });
+});
+
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${process.env.PORT}`);

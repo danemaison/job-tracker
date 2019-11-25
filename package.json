@@ -1,7 +1,7 @@
 {
   "name": "job-hunt",
   "version": "1.0.0",
-  "description": "An application to help manage job applications",
+  "description": "An application to help organize job applications",
   "main": "server/index.js",
   "engines": {
     "node": "10.15.3"

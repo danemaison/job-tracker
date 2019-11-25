@@ -33,21 +33,29 @@ const StyledIcon = styled(FontAwesomeIcon)`
   margin-right: 15px;
 `;
 
-const Logout = () => {
-  const sendLogout = () => {
+class Logout extends React.Component {
+  constructor(props) {
+    super(props);
+    this.sendLogout = this.sendLogout.bind(this);
+  }
+  sendLogout() {
     http
-      .post('/api/logout');
-  };
-  return (
-    <LogoutDiv>
-      <StyledIcon icon={faDoorOpen}/>
-    </LogoutDiv>
-  );
-};
+      .post('/api/logout')
+      .then(res => {
+        this.context.onLogin(false);
+      });
+  }
+  render() {
+    return (
+      <LogoutDiv>
+        <StyledIcon onClick={this.sendLogout} icon={faDoorOpen}/>
+      </LogoutDiv>
+    );
+  }
+}
 
 class Nav extends React.Component {
   render() {
-
     return (
       <NavBar>
         <div />
@@ -55,12 +63,12 @@ class Nav extends React.Component {
         {this.context.isLoggedIn()
           ? <Logout/>
           : <div/>}
-
       </NavBar>
     );
   }
 }
 
+Logout.contextType = AppContext;
 Nav.contextType = AppContext;
 
 export default Nav;

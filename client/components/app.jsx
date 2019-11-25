@@ -24,6 +24,9 @@ class App extends React.Component {
   onLogin(value) {
     this.setState({ loggedIn: value });
   }
+  onLogout(value) {
+    this.setState({ loggedIn: value });
+  }
   isLoggedIn() {
     return this.state.loggedIn;
   }

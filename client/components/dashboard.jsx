@@ -118,11 +118,19 @@ class Dashboard extends React.Component {
     }
     return appCounts;
   }
-  filter(title) {
-    if (title === 'applied') return this.setState({ filteredApps: null });
-
+  filter(title, company) {
     const { applications } = this.props;
-    const filteredApps = applications.filter(item => item.status === title);
+    let filteredApps = null;
+    if (title === 'applied') return this.setState({ filteredApps });
+
+    if (company) {
+      filteredApps = applications.filter(item =>
+        item.company.toLowerCase().includes(company.toLowerCase())
+      );
+    } else {
+      filteredApps = applications.filter(item => item.status === title);
+    }
+
     this.setState({
       filteredApps: filteredApps
     });
@@ -136,6 +144,11 @@ class Dashboard extends React.Component {
   handleSearch(e) {
     const { name, value } = e.currentTarget;
     this.setState({ [name]: value });
+    if (!value) {
+      this.filter('applied');
+      return;
+    }
+    this.filter(false, value);
   }
   render() {
     const { applications } = this.props;
