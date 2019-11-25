@@ -38,11 +38,14 @@ export const LoginInput = styled(Input)`
   margin-bottom:25px;
 `;
 
-export const StyledLink = styled(Link)`
+export const GuestLogin = styled.a`
   font-size:.6rem;
   margin-top:10px;
   text-decoration:none;
   color:${({ theme }) => theme.grey};
+  cursor:pointer;
+  background:none;
+  border:none;
   :hover{
     border-bottom:1px solid ${({ theme }) => theme.grey};
   }
@@ -85,6 +88,7 @@ class Login extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.guestLogin = this.guestLogin.bind(this);
   }
   handleChange(e) {
     const { name, value } = e.currentTarget;
@@ -98,6 +102,15 @@ class Login extends React.Component {
         if (res.error) {
           this.setState({ error: res.error });
         } else if (res.token) {
+          this.context.onLogin(true);
+        }
+      });
+  }
+  guestLogin() {
+    http
+      .post('/api/guest-login')
+      .then(res => {
+        if (res.token) {
           this.context.onLogin(true);
         }
       });
@@ -137,7 +150,7 @@ class Login extends React.Component {
           </Label>
           <Submit type="submit" value="Login" />
         </Form>
-        <StyledLink to="/">Continue as a guest</StyledLink>
+        <GuestLogin onClick={this.guestLogin}>Continue as a guest</GuestLogin>
       </Container>
     );
   }

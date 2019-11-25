@@ -110,7 +110,6 @@ class Register extends React.Component {
           </Label>
           <Submit type="submit" value="Register" />
         </Form>
-        <StyledLink to="/">Continue as a guest</StyledLink>
       </Container>
     );
   }

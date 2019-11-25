@@ -161,6 +161,12 @@ app.post('/api/logout', (req, res) => {
   res.send({ message: 'Logged out' });
 });
 
+app.post('/api/guest-login', (req, res) => {
+  const token = jwt.sign({ id: 1 }, process.env.TOKEN_SECRET);
+  res.cookie('logged-in', 'true');
+  res.cookie('auth-token', token, { httpOnly: true }).send({ token });
+});
+
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on port ${process.env.PORT}`);
