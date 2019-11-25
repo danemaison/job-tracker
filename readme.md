@@ -35,7 +35,7 @@ If you don't want to register, use the guest login located below the login butto
 
 # Preview
 
-![JobHunt](preview/job_hunt.gif)
+<img src="preview/job_hunt.gif" alt="Job Hunt Preview" width="350"/>
 
 # Development
 
