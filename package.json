@@ -68,7 +68,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danemaison/study-harder.git"
+    "url": "git+https://github.com/danemaison/job_tracker.git"
   },
   "nodemonConfig": {
     "watch": [

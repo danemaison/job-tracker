@@ -85,12 +85,14 @@ app.put('/api/update-application', authorize, (req, res) => {
 
 app.delete('/api/applications', authorize, (req, res) => {
   const appId = req.query.app_id;
-  // if (!appId) throw error;
+  if (!appId) {
+    res.send({ error: 'Invalid item' });
+    return;
+  }
 
   const sql = `DELETE FROM applications WHERE id = ? AND user = ?`;
   const params = [appId, req.user.id];
 
-  // Implement res
   database.query(
     sql,
     params,
