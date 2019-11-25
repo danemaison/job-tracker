@@ -35,7 +35,7 @@ If you don't want to register, use the guest login located below the login butto
 
 # Preview
 
-![JobHunt](preview/job_hunt.png)
+![JobHunt](preview/job_hunt.gif)
 
 # Development
 
