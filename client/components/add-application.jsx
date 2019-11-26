@@ -18,6 +18,7 @@ import { Title } from './ui/elements';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import http from '../lib/http';
+import { formatDate } from './utils/format-date';
 
 const DeleteButton = styled.button`
   align-self:flex-end;
@@ -90,16 +91,16 @@ class AddApp extends React.Component {
           id: id,
           company: company,
           position: position,
-          applicationDate: applicationDate,
+          applicationDate: formatDate(applicationDate),
           status: status,
-          interviewDate: interviewDate,
+          interviewDate: interviewDate && formatDate(interviewDate),
           notes: notes === 'NULL' ? '' : notes
         });
       } else {
         this.setState({
           company: '',
           position: '',
-          applicationDate: '',
+          applicationDate: formatDate(new Date()),
           status: 'waiting',
           interviewDate: '',
           notes: ''
@@ -115,11 +116,15 @@ class AddApp extends React.Component {
     return (
       <Wrapper open={open}>
         <Title>{editingData ? 'Edit' : 'Add'} an Application</Title>
-        {editingData &&
+        {editingData && (
           <DeleteButton
-            onClick={() => { this.deleteApp(editingData); }}>
-              Delete
-          </DeleteButton>}
+            onClick={() => {
+              this.deleteApp(editingData);
+            }}
+          >
+            Delete
+          </DeleteButton>
+        )}
         <Form onSubmit={submit}>
           <Label>
             Company
@@ -128,7 +133,8 @@ class AddApp extends React.Component {
               name="company"
               type="text"
               value={company}
-              onChange={handleChange} />
+              onChange={handleChange}
+            />
           </Label>
           <Label>
             Position
@@ -137,7 +143,8 @@ class AddApp extends React.Component {
               name="position"
               type="text"
               value={position}
-              onChange={handleChange} />
+              onChange={handleChange}
+            />
           </Label>
           <Label>
             Application Date
@@ -145,8 +152,10 @@ class AddApp extends React.Component {
               <DayPickerInput
                 required
                 value={applicationDate}
+                formatDate={formatDate}
                 onDayChange={handleApplicationDateChange}
-                inputProps={{ readOnly: true }} />
+                inputProps={{ readOnly: true }}
+              />
             </DatePickerWrapper>
           </Label>
           <Label>Status</Label>
@@ -188,8 +197,11 @@ class AddApp extends React.Component {
             <DatePickerWrapper>
               <DayPickerInput
                 value={interviewDate || ''}
+                formatDate={interviewDate ? formatDate : () => {}}
+                placeholder={'M/D/YYYY'}
                 onDayChange={handleInterviewDayChange}
-                inputProps={{ readOnly: true }} />
+                inputProps={{ readOnly: true }}
+              />
             </DatePickerWrapper>
           </Label>
           <Label>
@@ -197,7 +209,8 @@ class AddApp extends React.Component {
             <TextArea
               name="notes"
               value={notes || ''}
-              onChange={handleChange}/>
+              onChange={handleChange}
+            />
           </Label>
           <ButtonWrapper>
             <Cancel type="button" value="Cancel" onClick={toggleModal} />

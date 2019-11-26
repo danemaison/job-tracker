@@ -175,6 +175,7 @@ class Dashboard extends React.Component {
         </Client>
       );
     }
+
     const appCounts = this.countApplications();
     const { handleSearch } = this;
     const { filteredApps, search } = this.state;

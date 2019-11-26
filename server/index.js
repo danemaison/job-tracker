@@ -4,7 +4,6 @@ const database = require('./database');
 const bcrypt = require('bcryptjs');
 const sessions = require('./sessions');
 const authorize = require('./authorize');
-const validate = require('./validate');
 const { ApiError, errorHandler } = require('./errors');
 
 const app = express();
@@ -12,7 +11,6 @@ const app = express();
 app.use(sessions);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(validate);
 
 app.get('/api/applications', authorize, (req, res, next) => {
   const sql =
@@ -27,12 +25,17 @@ app.get('/api/applications', authorize, (req, res, next) => {
 });
 
 app.post('/api/applications', authorize, (req, res, next) => {
-  const { company, position, status, notes } = req.body;
-  if (!company || !position || !status || !notes) {
+  const { company, position, status, notes, applicationDate, interviewDate } = req.body;
+  if (!company || !position || !status || !applicationDate) {
     return next(new ApiError(400, 'Missing arguments'));
   }
-  const interviewDate = req.body.interviewDate.split('T')[0];
-  const applicationDate = req.body.applicationDate.split('T')[0];
+
+  // convert to unix timestamp
+  const applied = new Date(applicationDate).getTime();
+  let interviewed = null;
+  if (interviewDate) {
+    interviewed = new Date(interviewDate).getTime();
+  }
 
   const sql = `INSERT INTO applications
   (company, applicationDate, status, interviewDate, user, position, notes)
@@ -40,9 +43,9 @@ app.post('/api/applications', authorize, (req, res, next) => {
 
   const params = [
     company,
-    applicationDate,
+    applied,
     status,
-    interviewDate || null,
+    interviewed,
     req.session.userId,
     position,
     notes || null];
@@ -57,16 +60,25 @@ app.post('/api/applications', authorize, (req, res, next) => {
 });
 
 app.put('/api/applications', authorize, (req, res, next) => {
-  const { company, position, status, notes, id } = req.body;
+  const {
+    company,
+    position,
+    status,
+    notes,
+    id,
+    applicationDate,
+    interviewDate
+  } = req.body;
 
-  if (!company || !position || !status || !id) {
+  if (!company || !position || !status || !id || !applicationDate) {
     return next(new ApiError(400, 'Missing arguments'));
   }
 
-  const interviewDate = req.body.interviewDate && req.body.interviewDate.split(
-    'T'
-  )[0];
-  const applicationDate = req.body.applicationDate.split('T')[0];
+  const applied = new Date(applicationDate).getTime();
+  let interviewed = null;
+  if (interviewDate) {
+    interviewed = new Date(interviewDate).getTime();
+  }
 
   const sql = `UPDATE applications
   SET company = ?, applicationDate = ?, status = ?, interviewDate = ?, position = ?, notes = ?
@@ -74,9 +86,9 @@ app.put('/api/applications', authorize, (req, res, next) => {
 
   const params = [
     company,
-    applicationDate,
+    applied,
     status,
-    interviewDate || null,
+    interviewed,
     position,
     notes || null,
     id,

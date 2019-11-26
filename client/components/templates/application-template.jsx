@@ -8,6 +8,7 @@ import
   faCalendarCheck,
   faQuestionCircle
 } from '@fortawesome/free-solid-svg-icons';
+import { formatDate } from '../utils/format-date';
 
 const Details = styled.div`
   display: flex;
@@ -34,13 +35,15 @@ const statusIcons = {
   waiting: { icon: faQuestionCircle, color: theme.yellow }
 };
 
-const formatDate = date => {
-  if (typeof date.getDate !== 'function') date = new Date(date.slice(0, 23));
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-};
-
 const Application = ({ toggleModal, data }) => {
-  const { company, applicationDate: applied, status, interviewDate: interview, position } = data;
+  const {
+    company,
+    position,
+    status,
+    interviewDate: interview,
+    applicationDate: applied
+  } = data;
+
   const applicationDate = formatDate(applied);
   const interviewDate = interview && formatDate(interview);
   return (
