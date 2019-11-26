@@ -45,7 +45,7 @@ const TextArea = styled.textarea`
   font-size: 1rem;
   padding: 10px;
   resize: vertical;
-  height: 100%;
+  max-height: 100%;
   display: block;
   width: calc(100% - 20px);
   border: 1px solid ${({ theme }) => theme.grey};

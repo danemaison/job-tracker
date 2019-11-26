@@ -196,8 +196,8 @@ class AddApp extends React.Component {
             Interview Date
             <DatePickerWrapper>
               <DayPickerInput
-                value={interviewDate || ''}
-                formatDate={interviewDate ? formatDate : () => {}}
+                value={interviewDate || null}
+                formatDate={formatDate}
                 placeholder={'M/D/YYYY'}
                 onDayChange={handleInterviewDayChange}
                 inputProps={{ readOnly: true }}
