@@ -62,8 +62,7 @@ class AddApp extends React.Component {
   deleteApp(data) {
     const { toggleModal, updateApplications } = this.props;
     http
-      .delete(`/api/applications?app_id=${data.id}`)
-      .then(res => console.log(res));
+      .delete(`/api/applications?app_id=${data.id}`);
     updateApplications(data, data.id, true);
     toggleModal();
   }
@@ -79,12 +78,12 @@ class AddApp extends React.Component {
     app.applicationDate = app.applicationDate + 'T00:00';
     if (editingData) {
       http
-        .put('/api/update-application', app)
+        .put(`/api/applications?app_id=${editingData.id}`, app)
         .then(res => updateApplications(app));
     } else {
       http
-        .post('/api/add-application', app)
-        .then(res => updateApplications(app, res.insertId));
+        .post('/api/applications', app)
+        .then(res => updateApplications(app, res.id));
     }
     toggleModal();
   }

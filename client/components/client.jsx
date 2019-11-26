@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import Dashboard from './dashboard';
 import ToggleModalButton from './ui/add-button';
 import Modal from './add-application';
-import http from '../lib/http';
 import AppContext from '../lib/context';
 
 class Client extends React.Component {
@@ -14,6 +13,7 @@ class Client extends React.Component {
       modalOpen: false,
       editingData: null
     };
+    this.abortController = new AbortController();
     this.updateApplications = this.updateApplications.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
   }
@@ -22,9 +22,15 @@ class Client extends React.Component {
     this.setState({ modalOpen: !modalOpen, editingData: data || null });
   }
   getApplications() {
-    http
-      .get('/api/applications')
-      .then(applications => this.setState({ applications }));
+    fetch('/api/applications', {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      signal: this.abortController.signal
+    })
+      .then(res => res.json())
+      .then(applications => this.setState({ applications }))
+      .catch(err => console.warn(err));
   }
   updateApplications(data, id, del) {
     const { applications } = this.state;
@@ -45,6 +51,9 @@ class Client extends React.Component {
   }
   componentDidMount() {
     this.getApplications();
+  }
+  componentWillUnmount() {
+    this.abortController.abort();
   }
   render() {
     const { modalOpen, editingData, applications } = this.state;

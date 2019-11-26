@@ -4,6 +4,7 @@ const database = require('./database');
 const bcrypt = require('bcryptjs');
 const sessions = require('./sessions');
 const authorize = require('./authorize');
+const validate = require('./validate');
 const { ApiError, errorHandler } = require('./errors');
 
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 app.use(sessions);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(validate);
 
 app.get('/api/applications', authorize, (req, res, next) => {
   const sql =
@@ -19,13 +21,16 @@ app.get('/api/applications', authorize, (req, res, next) => {
   database.query(sql,
     params,
     (err, result) => {
-      if (err) next(err);
+      if (err) return next(err);
       res.send(result);
     });
 });
 
-app.post('/api/add-application', authorize, (req, res, next) => {
+app.post('/api/applications', authorize, (req, res, next) => {
   const { company, position, status, notes } = req.body;
+  if (!company || !position || !status || !notes) {
+    return next(new ApiError(400, 'Missing arguments'));
+  }
   const interviewDate = req.body.interviewDate.split('T')[0];
   const applicationDate = req.body.applicationDate.split('T')[0];
 
@@ -46,13 +51,18 @@ app.post('/api/add-application', authorize, (req, res, next) => {
     sql,
     params,
     (err, result) => {
-      if (err) next(err);
-      res.send(result);
+      if (err) return next(err);
+      res.json({ id: result.insertId });
     });
 });
 
-app.put('/api/update-application', authorize, (req, res, next) => {
+app.put('/api/applications', authorize, (req, res, next) => {
   const { company, position, status, notes, id } = req.body;
+
+  if (!company || !position || !status || !id) {
+    return next(new ApiError(400, 'Missing arguments'));
+  }
+
   const interviewDate = req.body.interviewDate && req.body.interviewDate.split(
     'T'
   )[0];
@@ -76,8 +86,8 @@ app.put('/api/update-application', authorize, (req, res, next) => {
   database.query(
     sql,
     params, (err, result) => {
-      if (err) next(err);
-      res.send(result);
+      if (err) return next(err);
+      res.status(200).json({});
     });
 
 });
@@ -95,32 +105,38 @@ app.delete('/api/applications', authorize, (req, res, next) => {
     sql,
     params,
     (err, result) => {
-      if (err) next(err);
+      if (err) return next(err);
       res.send(result);
     }
   );
 });
 
 app.post('/api/register', (req, res, next) => {
+
   let { username, password } = req.body;
+  if (!username || !password) {
+    return next(new ApiError(400, 'Invalid username/login'));
+  }
+
   let sql = `SELECT id FROM users WHERE username = ?`;
 
   database.query(sql, [username], (err, result) => {
-    if (err) next(err);
+    if (err) return next(err);
+
     if (result.length > 0) {
       return next(new ApiError(400, 'Invalid username'));
     } else {
-      sql = `INSERT INTO users SET username = ?, password = ?`;
       bcrypt.genSalt(10, (err, salt) => {
-        if (err) next(err);
+        if (err) return next(err);
         bcrypt.hash(password, salt, (err, hash) => {
-          if (err) next(err);
+          if (err) return next(err);
+          let sql = `INSERT INTO users SET username = ?, password = ?`;
           database.query(sql, [username, hash], (err, result) => {
-            if (err) next(err);
+            if (err) return next(err);
             req.session.regenerate(err => {
               if (err) return next(err);
               req.session.userId = result.insertId;
-              res.status(201).json(result);
+              res.status(201).json({});
             });
           });
         });
@@ -132,13 +148,14 @@ app.post('/api/register', (req, res, next) => {
 
 app.post('/api/login', (req, res, next) => {
   const { username, password } = req.body;
+
   if (!username || !password) {
     return next(new ApiError(400, 'Invalid Login'));
   }
   const sql = 'SELECT id, password FROM users WHERE username = ?';
 
   database.query(sql, [username], (err, result) => {
-    if (err) next(err);
+    if (err) return next(err);
     if (!result.length) {
       return next(new ApiError(401, 'Invalid username or password'));
     }
@@ -149,7 +166,7 @@ app.post('/api/login', (req, res, next) => {
         req.session.regenerate(err => {
           if (err) return next(err);
           req.session.userId = user.id;
-          res.status(201).json(result);
+          res.status(200).json({});
         });
       } else {
         return next(new ApiError(401, 'Invalid username or password'));
@@ -167,14 +184,14 @@ app.get('/api/auth', (req, res, next) => {
 
 app.post('/api/logout', authorize, (req, res, next) => {
   req.session.destroy();
-  res.json('logout');
+  res.status(200).json({});
 });
 
 app.post('/api/guest-login', (req, res, next) => {
   req.session.regenerate(err => {
     if (err) return next(err);
     req.session.userId = 1;
-    res.status(201).json(1);
+    res.status(201).json({});
   });
 });
 
