@@ -20,7 +20,7 @@ const Company = styled.div`
   font-weight: 600;
 `;
 const Position = styled.div`
-margin-top:5px;
+  margin-top:5px;
   font-size:.45rem;
 `;
 

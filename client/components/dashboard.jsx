@@ -44,7 +44,7 @@ const Loader = styled.img`
 `;
 
 const Prompt = styled.div`
-line-height:50px;
+  line-height:50px;
   text-align:center;
   font-size: 1rem;
   font-weight:400;
