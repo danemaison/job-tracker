@@ -36,9 +36,9 @@ class AddApp extends React.Component {
     super(props);
     this.state = {
       id: '',
-      company: 'Test',
+      company: '',
       position: '',
-      applicationDate: new Date(),
+      applicationDate: '',
       status: 'waiting',
       interviewDate: '',
       notes: ''
@@ -53,11 +53,10 @@ class AddApp extends React.Component {
     this.setState({ [name]: value });
   }
   handleApplicationDateChange(day) {
-    // converts date to SQL date for consistency
-    this.setState({ applicationDate: day.toISOString().slice(0, 10) });
+    this.setState({ applicationDate: day });
   }
   handleInterviewDayChange(day) {
-    this.setState({ interviewDate: day.toISOString().slice(0, 10) });
+    this.setState({ interviewDate: day });
   }
   deleteApp(data) {
     const { toggleModal, updateApplications } = this.props;
@@ -71,14 +70,9 @@ class AddApp extends React.Component {
     const { editingData, toggleModal, updateApplications } = this.props;
     const app = this.state;
 
-    app.interviewDate = app.interviewDate && app.interviewDate + 'T00:00';
-    if (typeof app.applicationDate.getDate === 'function') {
-      app.applicationDate = app.applicationDate.toISOString().slice(0, 23);
-    }
-    app.applicationDate = app.applicationDate + 'T00:00';
     if (editingData) {
       http
-        .put(`/api/applications?app_id=${editingData.id}`, app)
+        .put('/api/applications', app)
         .then(res => updateApplications(app));
     } else {
       http
@@ -90,9 +84,7 @@ class AddApp extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       if (this.props.editingData) {
-        const { id, company, notes, position, status, applicationDate: applied, interviewDate: interview } = this.props.editingData;
-        const applicationDate = applied.split('T')[0];
-        const interviewDate = interview && interview.split('T')[0];
+        const { id, company, notes, position, status, applicationDate, interviewDate } = this.props.editingData;
 
         this.setState({
           id: id,
@@ -107,7 +99,7 @@ class AddApp extends React.Component {
         this.setState({
           company: '',
           position: '',
-          applicationDate: new Date(),
+          applicationDate: '',
           status: 'waiting',
           interviewDate: '',
           notes: ''

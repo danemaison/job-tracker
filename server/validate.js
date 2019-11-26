@@ -1,4 +1,4 @@
-const ApiError = require('./errors');
+const { ApiError } = require('./errors');
 
 const validate = (req, res, next) => {
   const { body } = req;
