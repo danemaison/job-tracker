@@ -11,7 +11,7 @@ import {
   SubHeader,
   RegisterLink,
   ErrorDisplay
-} from './login';
+} from './ui/login-form';
 import { Submit } from './styling/form-styles';
 import AppContext from '../lib/context';
 
