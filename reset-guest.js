@@ -15,7 +15,7 @@ const defaultData = [
     position: 'TA',
     applied: 1573344000000,
     status: 'waiting',
-    interview: 1573776000000,
+    interview: null,
     notes: ''
   },
   {
@@ -23,14 +23,14 @@ const defaultData = [
     position: 'Full-Stack Developer',
     applied: 1572634800000,
     status: 'waiting',
-    interview: 1574899200000,
+    interview: null,
     notes: ''
   },
   {
     company: 'Applesauce Inc',
     position: 'Taste Tester',
     applied: 1573862400000,
-    status: 'waiting',
+    status: 'interview',
     interview: 1575411414542,
     notes: 'Need this.'
   },
@@ -39,14 +39,14 @@ const defaultData = [
     position: 'Frontend Engineer',
     applied: 1574553600000,
     status: 'rejected',
-    interview: 1575057600000,
+    interview: null,
     notes: ''
   }
 ];
 
 let sql = 'DELETE FROM applications WHERE user=1';
 
-db.query(sql, (err, result) => {
+db.query(sql, err => {
   if (err) throw err;
   for (let entity of defaultData) {
 
@@ -64,7 +64,9 @@ db.query(sql, (err, result) => {
       entity.notes
     ];
 
-    db.query(sql, params);
+    db.query(sql, params, err => {
+      if (err) throw err;
+    });
   }
 
 });
