@@ -57,7 +57,7 @@ class Logout extends React.Component {
 class Nav extends React.Component {
   render() {
     return (
-      <NavBar>
+      <NavBar clicked>
         <div />
         <Brand src="/job_hunt.svg" />
         {this.context.isLoggedIn()
