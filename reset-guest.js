@@ -44,7 +44,7 @@ const defaultData = [
   }
 ];
 
-let sql = 'DELETE FROM table `applications` where `user`=1';
+let sql = 'DELETE FROM table applications WHERE user=1';
 
 db.query(sql, (err, result) => {
   if (err) throw err;
