@@ -34,6 +34,8 @@ const HeaderRow = styled(TableRow)`
 `;
 
 const HeaderCardRow = styled(Row)`
+  padding-bottom: 15px;
+  border-bottom: 1px solid lightgrey;
   width:94%;
 `;
 
